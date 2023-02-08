@@ -11,18 +11,23 @@ public class main {
     public static void main(String[] args) {
         Arena g = new Arena();
 
-        int[] obstaclesX = {2,8,13,18,4};
-        int[] obstaclesY = {9,1,16,5,5};
+        int[] obstaclesX = {1,5,12,13,16};
+        int[] obstaclesY = {10,16,6,17,2};
         Direction[] obstaclesDirection = {NORTH, SOUTH, EAST, EAST, WEST};
 
         g.initObstacles(obstaclesX, obstaclesY, obstaclesDirection);
 
-        Waypoint a = new Waypoint(0,0,EAST);
-        Waypoint b = new Waypoint(160, 160, WEST);
-        ArrayList<PathSegment> path = pathFinder.findPathBetweenTwoNodes(a, b, g);
+        // testing PathFinder, to be removed
+        Waypoint a = new Waypoint(10,10,EAST);
+        Waypoint b = new Waypoint(150, 65, WEST);
+        boolean hasPath = pathFinder.findPathBetweenTwoNodes(a, b, g);
+        System.out.println("hasPath = "+ hasPath);
+        if (hasPath) {
+            ArrayList<PathSegment> path = pathFinder.getPath(b);
 
-        for (PathSegment p : path) {
-            System.out.println(p.toString());
+            for (PathSegment p : path) {
+                System.out.println(p.toString());
+            }
         }
     }
 }

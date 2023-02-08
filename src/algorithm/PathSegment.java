@@ -1,7 +1,5 @@
 package algorithm;
 
-import java.util.Comparator;
-
 import static algorithm.Constants.*;
 
 enum MovementType {
@@ -17,25 +15,35 @@ public class PathSegment implements Comparable<PathSegment> {
     PathSegment parent;
     Waypoint pos;
     int gcost = -1;
-
-    public int getFcost() {
-        return fcost;
-    }
-
     int fcost = -1;
     MovementType type;
-
-    @Override
-    public int compareTo(PathSegment o) {
-        return this.fcost - o.getFcost();
-    }
 
     public PathSegment(PathSegment parent, Waypoint pos, MovementType type) {
         this.parent = parent;
         this.pos = pos;
         this.type = type;
 
-        calculateGCost();
+        calcGCost();
+    }
+
+    public int getFcost() {
+        return fcost;
+    }
+
+    @Override
+    public int compareTo(PathSegment o) {
+        return this.fcost - o.getFcost();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof PathSegment) {
+            PathSegment move = (PathSegment) o;
+            if(pos.equals(move.getPos())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
@@ -45,7 +53,7 @@ public class PathSegment implements Comparable<PathSegment> {
                 this.gcost + " " + this.fcost;
     }
 
-    public void calculateGCost() {
+    public void calcGCost() {
         if (parent == null) {
             this.gcost = 0;
             return;
@@ -85,8 +93,14 @@ public class PathSegment implements Comparable<PathSegment> {
     }
 
     public void calcFCost(Waypoint goal) {
+        if (goal == null) {
+            this.fcost = 0;
+            return;
+        }
+
         int hcost = Math.abs(pos.CoordinateX - goal.getCoordinateX()) + Math.abs(pos.CoordinateY - goal.getCoordinateY());
         fcost = gcost + hcost;
+        return;
     }
 
     public MovementType getType() {

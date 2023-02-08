@@ -13,10 +13,11 @@ public class Cell {
         this.positionY = positionY;
     }
 
+    public String toString() {
+        return "Cell (" + positionX + ", " + positionY + ")";
+    }
+
     public boolean isObstacle() {
-//        if (positionX < 0 || positionY < 0 || positionX > 19 || positionY > 19) {
-//            return false;
-//        }
         return isObstacle;
     }
 

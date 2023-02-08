@@ -1,13 +1,13 @@
 package algorithm;
 
+import java.util.ArrayList;
+
 import static algorithm.Constants.*;
-import static algorithm.Constants.BACKWARD_MOVEMENT;
-import static algorithm.Direction.*;
-import static algorithm.Direction.WEST;
 
 public class Arena {
 
     Cell[][] grid;
+    ArrayList<Waypoint> goals = new ArrayList<>();
 
     public Arena() {
         grid = new Cell[GRID_SIZE_IN_CELLS][GRID_SIZE_IN_CELLS];
@@ -36,215 +36,44 @@ public class Arena {
             grid[yCoordinate][xCoordinate].setImageDirection(d[i]);
 
             for (int j = xCoordinate-1; j<=xCoordinate+1; j++) {
+                if (j < 0 || j > 19) {
+                    continue;
+                }
                 for (int k = yCoordinate-1; k<=yCoordinate+1; k++) {
+                    if (k < 0 || k > 19) {
+                        continue;
+                    }
                     grid[k][j].setObstacle(true);
                 }
             }
         }
+
+        for (int i = 0; i<20; i++) {
+            grid[0][i].setObstacle(true);
+            grid[19][i].setObstacle(true);
+            grid[i][0].setObstacle(true);
+            grid[i][19].setObstacle(true);
+        }
+
+        // TODO: add code to calculate goal positions
     }
 
-    public boolean validCell(int x, int y) {
+    // currently unused, may not be necessary
+    public boolean validCell(Waypoint p) {
+        int x = p.getCoordinateX();
+        int y = p.getCoordinateY();
+        if (x < 0 || y < 0 || x > 199 || y > 199) {
+            return false;
+        }
+        return !grid[p.getCoordinateY()/10][p.getCoordinateX()/10].isObstacle();
+    }
+
+    public boolean validCell(Cell c) {
+        int x = c.getPositionX();
+        int y = c.getPositionY();
         if (x < 0 || y < 0 || x > 19 || y > 19) {
             return false;
         }
-        return grid[y][x].isObstacle();
-    }
-
-    public boolean validateForwardMovement(int x, int y, Direction d) {
-        if (d == NORTH) {
-            for (int i = 0; i<FORWARD_MOVEMENT; i++) {
-                if (!validCell(x, y+i)) {
-                    return false;
-                }
-            }
-        } else if (d == SOUTH) {
-            for (int i = 0; i<FORWARD_MOVEMENT; i++) {
-                if (!validCell(x, y-i)) {
-                    return false;
-                }
-            }
-        } else if (d == EAST) {
-            for (int i = 0; i<FORWARD_MOVEMENT; i++) {
-                if (!validCell(x+i, y)) {
-                    return false;
-                }
-            }
-        } else if (d == WEST) {
-            for (int i = 0; i<FORWARD_MOVEMENT; i++) {
-                if (!validCell(x-i, y)) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
-    public boolean validateBackwardMovement(int x, int y, Direction d) {
-        if (d == NORTH) {
-            for (int i = 0; i<BACKWARD_MOVEMENT; i++) {
-                if (!validCell(x, y-i)) {
-                    return false;
-                }
-            }
-        } else if (d == SOUTH) {
-            for (int i = 0; i<BACKWARD_MOVEMENT; i++) {
-                if (!validCell(x, y+i)) {
-                    return false;
-                }
-            }
-        } else if (d == EAST) {
-            for (int i = 0; i<BACKWARD_MOVEMENT; i++) {
-                if (!validCell(x-i, y)) {
-                    return false;
-                }
-            }
-        } else if (d == WEST) {
-            for (int i = 0; i<BACKWARD_MOVEMENT; i++) {
-                if (!validCell(x+i, y)) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
-    public boolean validateForwardLeftTurn(int x, int y, Direction d) {
-        if (d == NORTH) {
-            for (int i = 0; i >= 1; i--) {
-                for (int j = 1; j <= 2; j++) {
-                    if (!validCell(x-i, y+j)) {
-                        return false;
-                    }
-                }
-            }
-        } else if (d == SOUTH) {
-            for (int i = 0; i >= 1; i--) {
-                for (int j = 1; j <= 2; j++) {
-                    if (!validCell(x+i, y-j)) {
-                        return false;
-                    }
-                }
-            }
-        } else if (d == EAST) {
-            for (int i = 0; i >= 1; i--) {
-                for (int j = 1; j <= 2; j++) {
-                    if (!validCell(x+j, y+i)) {
-                        return false;
-                    }
-                }
-            }
-        } else if (d == WEST) {
-            for (int i = 0; i >= 1; i--) {
-                for (int j = 1; j <= 2; j++) {
-                    if (!validCell(x-j, y-i)) {
-                        return false;
-                    }
-                }
-            }
-        }
-        return true;
-    }
-
-    public boolean validateForwardRightTurn(int x, int y, Direction d) {
-        if (d == NORTH) {
-            for (int i = 0; i >= 1; i--) {
-                for (int j = 1; j <= 2; j++) {
-                    if (!validCell(x+i, y+j)) {
-                        return false;
-                    }
-                }
-            }
-        } else if (d == SOUTH) {
-            for (int i = 0; i >= 1; i--) {
-                for (int j = 1; j <= 2; j++) {
-                    if (!validCell(x-i, y-j)) {
-                        return false;
-                    }
-                }
-            }
-        } else if (d == EAST) {
-            for (int i = 0; i >= 1; i--) {
-                for (int j = 1; j <= 2; j++) {
-                    if (!validCell(x+j, y-i)) {
-                        return false;
-                    }
-                }
-            }
-        } else if (d == WEST) {
-            for (int i = 0; i >= 1; i--) {
-                for (int j = 1; j <= 2; j++) {
-                    if (!validCell(x+j, y+i)) {
-                        return false;
-                    }
-                }
-            }
-        }
-        return true;
-    }
-
-    public boolean validateBackwardLeftTurn(int x, int y, Direction d) {
-        if (d == NORTH) {
-            if (grid[y-1][x].isObstacle() ||
-                    grid[y-2][x].isObstacle() ||
-                    grid[y-1][x-1].isObstacle() ||
-                    grid[y-2][x-1].isObstacle()) {
-                return false;
-            }
-        } else if (d == SOUTH) {
-            if (grid[y+1][x].isObstacle() ||
-                    grid[y+2][x].isObstacle() ||
-                    grid[y+1][x+1].isObstacle() ||
-                    grid[y+2][x+1].isObstacle()) {
-                return false;
-            }
-        } else if (d == EAST) {
-            if (grid[y+1][x].isObstacle() ||
-                    grid[y+2][x].isObstacle() ||
-                    grid[y+1][x-1].isObstacle() ||
-                    grid[y+2][x-1].isObstacle()) {
-                return false;
-            }
-        } else if (d == WEST) {
-            if (grid[y-1][x].isObstacle() ||
-                    grid[y-2][x].isObstacle() ||
-                    grid[y-1][x+1].isObstacle() ||
-                    grid[y-2][x+1].isObstacle()) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    public boolean validateBackwardRightTurn(int x, int y, Direction d) {
-        if (d == NORTH) {
-            if (grid[y-1][x].isObstacle() ||
-                    grid[y-2][x].isObstacle() ||
-                    grid[y-1][x+1].isObstacle() ||
-                    grid[y-2][x+1].isObstacle()) {
-                return false;
-            }
-        } else if (d == SOUTH) {
-            if (grid[y+1][x].isObstacle() ||
-                    grid[y+2][x].isObstacle() ||
-                    grid[y+1][x-1].isObstacle() ||
-                    grid[y+2][x-1].isObstacle()) {
-                return false;
-            }
-        } else if (d == EAST) {
-            if (grid[y-1][x].isObstacle() ||
-                    grid[y-2][x].isObstacle() ||
-                    grid[y-1][x-1].isObstacle() ||
-                    grid[y-2][x-1].isObstacle()) {
-                return false;
-            }
-        } else if (d == WEST) {
-            if (grid[y+1][x].isObstacle() ||
-                    grid[y+2][x].isObstacle() ||
-                    grid[y+1][x+1].isObstacle() ||
-                    grid[y+2][x+1].isObstacle()) {
-                return false;
-            }
-        }
-        return true;
+        return !grid[y][x].isObstacle();
     }
 }

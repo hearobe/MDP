@@ -1,10 +1,8 @@
 package algorithm;
 
-import static algorithm.Direction.NULL;
-
 public class Cell {
     private boolean isObstacle = false;
-    Direction imageDirection = NULL;
+    Direction imageDirection = null;
     int positionX; // in terms of grid number. i.e. rightmost cell is 19
     int positionY; // in terms of grid number. i.e. bottom cell is 19
 

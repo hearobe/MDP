@@ -26,7 +26,7 @@ public class Arena {
     // add obstacle positions
     // add node waypoints for start position and obstacle viewing points
     // robot start position
-    public void initObstacles(int[] x, int[] y, Direction[] d) {
+    public void initArenaObstacles(int[] x, int[] y, Direction[] d) {
         int length = x.length;
 
         for (int i = 0; i<length; i++) {
@@ -54,8 +54,6 @@ public class Arena {
             grid[i][0].setObstacle(true);
             grid[i][19].setObstacle(true);
         }
-
-        // TODO: add code to calculate goal positions
     }
 
     // currently unused, may not be necessary

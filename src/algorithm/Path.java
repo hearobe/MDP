@@ -1,12 +1,17 @@
 package algorithm;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class Path {
-    List<Waypoint> path;
+    List<PathSegment> path;
+    int cost;
 
-    public Path() {
-        path = new ArrayList<Waypoint>();
+    public Path(List<PathSegment> path, int cost) {
+        this.path = path;
+        this.cost = cost;
+    }
+
+    public int getCost() {
+        return cost;
     }
 }

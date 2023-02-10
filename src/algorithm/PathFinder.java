@@ -14,7 +14,7 @@ public class PathFinder {
 
     public PathFinder() {}
 
-    public boolean findPathBetweenTwoNodes(Waypoint a, Waypoint b, Arena g) {
+    public Path findPathBetweenTwoNodes(Waypoint a, Waypoint b, Arena g) {
         visited.clear();
         queue.clear();
         lastMove = null;
@@ -33,7 +33,18 @@ public class PathFinder {
                     lastMove = candidate;
                     visited.add(cur);
                     visited.add(candidate);
-                    return true;
+
+                    ArrayList<PathSegment> pathSegments = new ArrayList<PathSegment>();
+                    PathSegment curMove = lastMove;
+                    PathSegment curParent;
+                    do {
+                        curParent = cur.getParent();
+                        pathSegments.add(0,curMove);
+                        curMove = curParent;
+                    } while (curParent != null);
+
+                    Path path = new Path(pathSegments, lastMove.gcost);
+                    return path;
                 }
 
                 if(queue.contains(candidate)) {
@@ -74,29 +85,25 @@ public class PathFinder {
             }
             visited.add(cur);
         }
-        return false;
+        return null;
     }
 
-    public ArrayList<PathSegment> getPath(Waypoint goal) {
-        if (lastMove == null) {
-            return null;
-        }
-        int index = visited.indexOf(lastMove);
-        if (index == -1) {
-            return null;
-        }
-        ArrayList<PathSegment> path = new ArrayList<PathSegment>();
-
-        PathSegment cur = visited.get(index);
-        PathSegment curParent;
-        do {
-            curParent = cur.getParent();
-            path.add(0,cur);
-            cur = curParent;
-        } while (curParent != null);
-
-        return path;
-    }
+//    public Path getPath() {
+//        if (lastMove == null) {
+//            return null;
+//        }
+//        ArrayList<PathSegment> pathSegments = new ArrayList<PathSegment>();
+//        PathSegment cur = lastMove;
+//        PathSegment curParent;
+//        do {
+//            curParent = cur.getParent();
+//            pathSegments.add(0,cur);
+//            cur = curParent;
+//        } while (curParent != null);
+//
+//        Path path = new Path(pathSegments);
+//        return path;
+//    }
 
     public List<PathSegment> getCandidatePathSegments(PathSegment a, Arena g) {
         LinkedList<PathSegment> candidates = new LinkedList<>();

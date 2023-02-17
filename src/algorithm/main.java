@@ -2,6 +2,7 @@ package algorithm;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import static algorithm.Direction.*;
 
@@ -14,28 +15,46 @@ public class main {
     private static Waypoint[] goals;
     public static void main(String[] args) {
 
-        int[] obstaclesX = {1,5,12,13,16};
-        int[] obstaclesY = {10,16,6,17,2};
-        Direction[] obstaclesDirection = {NORTH, SOUTH, EAST, EAST, WEST};
+        int[] obstaclesX = {3,6,8,14,16};
+        int[] obstaclesY = {10,14,8,16,4};
+        Direction[] obstaclesDirection = {SOUTH, EAST, NORTH, WEST, EAST};
 
         setObstacles(obstaclesX, obstaclesY, obstaclesDirection);
-        calcGoals(new Waypoint (1, 1, EAST));
+        //TODO: take start point as input, pass it into calcGoals
+        calcGoals(new Waypoint (20, 20, EAST));
 
-        int n = goals.length;
-        pathMatrix = new Path[n][n];
-        for (int i = 0; i<n; i++) {
-            for (int j = 1; j<n; j++) {
-                pathMatrix[i][j] = pathFinder.findPathBetweenTwoNodes(goals[i], goals[j], arena);
-                if (pathMatrix[i][j] != null) {
-                    costMatrix[i][j] = pathMatrix[i][j].getCost();
-                }
-            }
-        }
+        List<List<CarCoordinate>> path = getPath();
+
+        // testing PathFinder, to be removed
+//        Waypoint a = new Waypoint(10,10,EAST);
+//        Waypoint b = new Waypoint(150, 65, WEST);
+//        boolean hasPath = pathFinder.findPathBetweenTwoNodes(a, b, g);
+//        System.out.println("hasPath = "+ hasPath);
+//        if (hasPath) {
+//            ArrayList<PathSegment> path = pathFinder.getPath(b);
+//
+//            for (PathSegment p : path) {
+//                System.out.println(p.toString());
+//            }
+//        }
+
+        // permute test
+//        Permute p = new Permute(5);
+//        ArrayList<int[]> permutations = p.getPermutations();
+//        for(int[] a : permutations) {
+//            System.out.println(Arrays.toString(a));
+//        }
+//        System.out.println(permutations.size());
+    }
+
+    private static List<List<CarCoordinate>> getPath() {
+        fillPathMatrix();
+        List<List<CarCoordinate>> carCoordinates = new ArrayList<>();
 
         boolean isPathPossible = true;
         long minCost = Long.MAX_VALUE;
         long curCost = 0;
-        int[] minPermutation;
+        int[] minPermutation = new int[obstacles.length];
 
         Permute p = new Permute(obstacles.length);
         ArrayList<int[]> permutations = p.getPermutations();
@@ -60,34 +79,37 @@ public class main {
                 minPermutation = Arrays.copyOf(a, a.length);
             }
         }
+        System.out.println(Arrays.toString(minPermutation));
 
-        // testing PathFinder, to be removed
-//        Waypoint a = new Waypoint(10,10,EAST);
-//        Waypoint b = new Waypoint(150, 65, WEST);
-//        boolean hasPath = pathFinder.findPathBetweenTwoNodes(a, b, g);
-//        System.out.println("hasPath = "+ hasPath);
-//        if (hasPath) {
-//            ArrayList<PathSegment> path = pathFinder.getPath(b);
-//
-//            for (PathSegment p : path) {
-//                System.out.println(p.toString());
-//            }
-//        }
+        carCoordinates.add(pathMatrix[0][minPermutation[0]].getCarCoordinates());
+        for (int i = 0; i<minPermutation.length; i++) {
+            carCoordinates.add(pathMatrix[i-1][i].getCarCoordinates());
+        }
 
-        // permute test
-//        Permute p = new Permute(5);
-//        ArrayList<int[]> permutations = p.getPermutations();
-//        for(int[] a : permutations) {
-//            System.out.println(Arrays.toString(a));
-//        }
-//        System.out.println(permutations.size());
+        return carCoordinates;
+    }
+
+    private static void fillPathMatrix() {
+        int n = goals.length;
+        pathMatrix = new Path[n][n];
+        costMatrix = new int[n][n];
+        for (int i = 0; i<n; i++) {
+            for (int j = 1; j<n; j++) {
+                System.out.println("finding path between " + i + " and " + j);
+                pathMatrix[i][j] = pathFinder.findPathBetweenTwoNodes(goals[i], goals[j], arena);
+                if (pathMatrix[i][j] != null) {
+                    costMatrix[i][j] = pathMatrix[i][j].getCost();
+                    System.out.println("path between " + i + " and " + j + " found.");
+                }
+            }
+        }
     }
 
     private static void setObstacles(int[] x, int[] y, Direction[] d) {
         int n = x.length;
         obstacles = new Waypoint[n];
         for (int i = 0; i<n; i++) {
-            obstacles[i] = new Waypoint(x[i], y[i], d[i]);
+            obstacles[i] = new Waypoint(x[i]*10 + 5, y[i]*10 + 5, d[i]);
         }
 
         arena.initArenaObstacles(x,y,d);
@@ -97,18 +119,18 @@ public class main {
         goals = new Waypoint[obstacles.length+1];
         goals[0] = start;
         for (int i = 1; i <= obstacles.length; i++) {
-            switch (obstacles[i].getDirection()) {
+            switch (obstacles[i-1].getDirection()) {
                 case NORTH:
-                    goals[i] = new Waypoint(obstacles[i].getCoordinateX(), obstacles[i].getCoordinateY() + 25, Direction.values()[(NORTH.ordinal()+2) % 4]);
+                    goals[i] = new Waypoint(obstacles[i-1].getCoordinateX(), obstacles[i-1].getCoordinateY() + 25, Direction.values()[(NORTH.ordinal()+2) % 4]);
                     break;
                 case SOUTH:
-                    goals[i] = new Waypoint(obstacles[i].getCoordinateX(), obstacles[i].getCoordinateY() - 25, Direction.values()[(SOUTH.ordinal()+2) % 4]);
+                    goals[i] = new Waypoint(obstacles[i-1].getCoordinateX(), obstacles[i-1].getCoordinateY() - 25, Direction.values()[(SOUTH.ordinal()+2) % 4]);
                     break;
                 case EAST:
-                    goals[i] = new Waypoint(obstacles[i].getCoordinateX() + 25, obstacles[i].getCoordinateY(), Direction.values()[(EAST.ordinal()+2) % 4]);
+                    goals[i] = new Waypoint(obstacles[i-1].getCoordinateX() + 25, obstacles[i-1].getCoordinateY(), Direction.values()[(EAST.ordinal()+2) % 4]);
                     break;
                 case WEST:
-                    goals[i] = new Waypoint(obstacles[i].getCoordinateX() - 25, obstacles[i].getCoordinateY(), Direction.values()[(WEST.ordinal()+2) % 4]);
+                    goals[i] = new Waypoint(obstacles[i-1].getCoordinateX() - 25, obstacles[i-1].getCoordinateY(), Direction.values()[(WEST.ordinal()+2) % 4]);
                     break;
                 default:
                     System.out.println("Error in calcGoals");

@@ -16,6 +16,10 @@ public class Waypoint {
         this.direction = direction;
     }
 
+    public String toString() {
+        return "("+ CoordinateX + ", " + CoordinateY + ")  " + direction;
+    }
+
     public boolean equals(Waypoint a) {
         return this.getCoordinateX() == a.getCoordinateX() &&
                 this.getCoordinateY() == a.getCoordinateY() &&

@@ -38,7 +38,7 @@ public class PathFinder {
                     PathSegment curMove = lastMove;
                     PathSegment curParent;
                     do {
-                        curParent = cur.getParent();
+                        curParent = curMove.getParent();
                         pathSegments.add(0,curMove);
                         curMove = curParent;
                     } while (curParent != null);
@@ -87,23 +87,6 @@ public class PathFinder {
         }
         return null;
     }
-
-//    public Path getPath() {
-//        if (lastMove == null) {
-//            return null;
-//        }
-//        ArrayList<PathSegment> pathSegments = new ArrayList<PathSegment>();
-//        PathSegment cur = lastMove;
-//        PathSegment curParent;
-//        do {
-//            curParent = cur.getParent();
-//            pathSegments.add(0,cur);
-//            cur = curParent;
-//        } while (curParent != null);
-//
-//        Path path = new Path(pathSegments);
-//        return path;
-//    }
 
     public List<PathSegment> getCandidatePathSegments(PathSegment a, Arena g) {
         LinkedList<PathSegment> candidates = new LinkedList<>();

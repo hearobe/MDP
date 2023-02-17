@@ -1,5 +1,6 @@
 package algorithm;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Path {
@@ -13,5 +14,29 @@ public class Path {
 
     public int getCost() {
         return cost;
+    }
+
+    public List<PathSegment> getPath() {
+        return path;
+    }
+
+    public List<CarCoordinate> getCarCoordinates() {
+        ArrayList<CarCoordinate> list = new ArrayList<>();
+        CarCoordinate cur;
+        for (PathSegment e: path) {
+            if (e.type == null || e.type == MovementType.FORWARD || e.type == MovementType.BACKWARD) {
+                cur = new CarCoordinate(e.pos.getCoordinateX()/10, e.pos.getCoordinateY()/10, e.pos.getDirection());
+                list.add(cur);
+            } else {
+                if (e.pos.getDirection() == Direction.NORTH || e.pos.getDirection() == Direction.SOUTH) {
+                    cur = new CarCoordinate(e.parent.pos.getCoordinateX()/10, e.pos.getCoordinateY()/10, e.pos.getDirection());
+                    list.add(cur);
+                } else {
+                    cur = new CarCoordinate(e.pos.getCoordinateX()/10, e.parent.pos.getCoordinateY()/10, e.pos.getDirection());
+                    list.add(cur);
+                }
+            }
+        }
+        return list;
     }
 }

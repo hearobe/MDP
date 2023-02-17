@@ -28,7 +28,7 @@ public class Path {
                 cur = new CarCoordinate(e.pos.getCoordinateX()/10, e.pos.getCoordinateY()/10, e.pos.getDirection());
                 list.add(cur);
             } else {
-                if (e.pos.getDirection() == Direction.NORTH || e.pos.getDirection() == Direction.SOUTH) {
+                if (e.pos.getDirection() == Direction.UP || e.pos.getDirection() == Direction.DOWN) {
                     cur = new CarCoordinate(e.parent.pos.getCoordinateX()/10, e.pos.getCoordinateY()/10, e.pos.getDirection());
                     list.add(cur);
                 } else {

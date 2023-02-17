@@ -15,13 +15,13 @@ public class main {
     private static Waypoint[] goals;
     public static void main(String[] args) {
 
-        int[] obstaclesX = {3,6,8,14,16};
-        int[] obstaclesY = {10,14,8,16,4};
-        Direction[] obstaclesDirection = {SOUTH, EAST, NORTH, WEST, EAST};
+        int[] obstaclesX = {6,3,8,14,16};
+        int[] obstaclesY = {14,10,8,16,4};
+        Direction[] obstaclesDirection = {RIGHT, DOWN, UP, LEFT, UP};
 
         setObstacles(obstaclesX, obstaclesY, obstaclesDirection);
         //TODO: take start point as input, pass it into calcGoals
-        calcGoals(new Waypoint (20, 20, EAST));
+        calcGoals(new Waypoint (20, 20, RIGHT));
 
         List<List<CarCoordinate>> path = getPath();
 
@@ -82,7 +82,7 @@ public class main {
         System.out.println(Arrays.toString(minPermutation));
 
         carCoordinates.add(pathMatrix[0][minPermutation[0]].getCarCoordinates());
-        for (int i = 0; i<minPermutation.length; i++) {
+        for (int i = 1; i<minPermutation.length; i++) {
             carCoordinates.add(pathMatrix[i-1][i].getCarCoordinates());
         }
 
@@ -120,17 +120,17 @@ public class main {
         goals[0] = start;
         for (int i = 1; i <= obstacles.length; i++) {
             switch (obstacles[i-1].getDirection()) {
-                case NORTH:
-                    goals[i] = new Waypoint(obstacles[i-1].getCoordinateX(), obstacles[i-1].getCoordinateY() + 25, Direction.values()[(NORTH.ordinal()+2) % 4]);
+                case UP:
+                    goals[i] = new Waypoint(obstacles[i-1].getCoordinateX(), obstacles[i-1].getCoordinateY() + 25, Direction.values()[(UP.ordinal()+2) % 4]);
                     break;
-                case SOUTH:
-                    goals[i] = new Waypoint(obstacles[i-1].getCoordinateX(), obstacles[i-1].getCoordinateY() - 25, Direction.values()[(SOUTH.ordinal()+2) % 4]);
+                case DOWN:
+                    goals[i] = new Waypoint(obstacles[i-1].getCoordinateX(), obstacles[i-1].getCoordinateY() - 25, Direction.values()[(DOWN.ordinal()+2) % 4]);
                     break;
-                case EAST:
-                    goals[i] = new Waypoint(obstacles[i-1].getCoordinateX() + 25, obstacles[i-1].getCoordinateY(), Direction.values()[(EAST.ordinal()+2) % 4]);
+                case RIGHT:
+                    goals[i] = new Waypoint(obstacles[i-1].getCoordinateX() + 25, obstacles[i-1].getCoordinateY(), Direction.values()[(RIGHT.ordinal()+2) % 4]);
                     break;
-                case WEST:
-                    goals[i] = new Waypoint(obstacles[i-1].getCoordinateX() - 25, obstacles[i-1].getCoordinateY(), Direction.values()[(WEST.ordinal()+2) % 4]);
+                case LEFT:
+                    goals[i] = new Waypoint(obstacles[i-1].getCoordinateX() - 25, obstacles[i-1].getCoordinateY(), Direction.values()[(LEFT.ordinal()+2) % 4]);
                     break;
                 default:
                     System.out.println("Error in calcGoals");

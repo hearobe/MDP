@@ -16,7 +16,7 @@ public class Permute {
         elements = new int[length];
 
         for (int i = 0; i<length; i++) {
-            elements[i] = i;
+            elements[i] = i+1;
             indexes[i] = 0;
         }
     }

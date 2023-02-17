@@ -2,6 +2,7 @@ package algorithm;
 
 import java.util.ArrayList;
 import java.util.List;
+import car.CarCoordinate;
 
 public class Path {
     List<PathSegment> path;

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import car.CarCoordinate;
+
 import static algorithm.Direction.*;
 
 public class PathSequencer {
@@ -13,7 +15,7 @@ public class PathSequencer {
     private int[][] costMatrix;
     private Waypoint[] goals;
 
-    public PathSequencer(Arena arena, Waypoint start) {
+    public PathSequencer(Arena arena, CarCoordinate start) {
         this.arena = arena;
 
         calcGoals(start);
@@ -68,21 +70,21 @@ public class PathSequencer {
         costMatrix = new int[n][n];
         for (int i = 0; i<n; i++) {
             for (int j = 1; j<n; j++) {
-                System.out.println("finding path between " + i + " and " + j);
+//                System.out.println("finding path between " + i + " and " + j);
                 pathMatrix[i][j] = pathFinder.findPathBetweenTwoNodes(goals[i], goals[j], arena);
                 if (pathMatrix[i][j] != null) {
                     costMatrix[i][j] = pathMatrix[i][j].getCost();
-                    System.out.println("path between " + i + " and " + j + " found.");
+//                    System.out.println("path between " + i + " and " + j + " found.");
                 }
             }
         }
     }
 
 
-    private void calcGoals(Waypoint start) {
+    private void calcGoals(CarCoordinate start) {
         Waypoint[] obstacles = arena.getObstacles();
+        goals[0] = new Waypoint(start.getX()*10 + 5, start.getY()*10 + 5, start.getDir());
         goals = new Waypoint[obstacles.length+1];
-        goals[0] = start;
         for (int i = 1; i <= obstacles.length; i++) {
             switch (obstacles[i-1].getDirection()) {
                 case UP:

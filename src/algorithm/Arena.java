@@ -8,7 +8,7 @@ import static algorithm.Direction.LEFT;
 
 public class Arena {
 
-    private Cell[][] grid;
+    public Cell[][] grid;
     private Waypoint[] obstacles;
 
 
@@ -20,7 +20,7 @@ public class Arena {
                 grid[row][col] = new Cell(row, col);
 
                 if (row == 0 || col == 0 || row == GRID_SIZE_IN_CELLS-1 || col == GRID_SIZE_IN_CELLS-1) {
-                    grid[row][col].setObstacle(true);
+                    grid[row][col].setBuffer(true);
                 }
             }
         }
@@ -51,17 +51,20 @@ public class Arena {
                     if (k < 0 || k > 19) {
                         continue;
                     }
+                    if (j == xCoordinate && k == yCoordinate) {
+                        grid[k][j].setBuffer(true);
+                    }
                     grid[k][j].setObstacle(true);
                 }
             }
         }
 
-        for (int i = 0; i<20; i++) {
-            grid[0][i].setObstacle(true);
-            grid[19][i].setObstacle(true);
-            grid[i][0].setObstacle(true);
-            grid[i][19].setObstacle(true);
-        }
+//        for (int i = 0; i<20; i++) {
+//            grid[0][i].setObstacle(true);
+//            grid[19][i].setObstacle(true);
+//            grid[i][0].setObstacle(true);
+//            grid[i][19].setObstacle(true);
+//        }
     }
 
 

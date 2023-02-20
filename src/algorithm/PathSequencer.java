@@ -54,11 +54,11 @@ public class PathSequencer {
                 minPermutation = Arrays.copyOf(a, a.length);
             }
         }
-        System.out.println(Arrays.toString(minPermutation));
+//        System.out.println(Arrays.toString(minPermutation));
 
         carCoordinates.add(pathMatrix[0][minPermutation[0]].getCarCoordinates());
         for (int i = 1; i<minPermutation.length; i++) {
-            carCoordinates.add(pathMatrix[i-1][i].getCarCoordinates());
+            carCoordinates.add(pathMatrix[minPermutation[i-1]][minPermutation[i]].getCarCoordinates());
         }
 
         return carCoordinates;
@@ -83,8 +83,8 @@ public class PathSequencer {
 
     private void calcGoals(CarCoordinate start) {
         Waypoint[] obstacles = arena.getObstacles();
-        goals[0] = new Waypoint(start.getX()*10 + 5, start.getY()*10 + 5, start.getDir());
         goals = new Waypoint[obstacles.length+1];
+        goals[0] = new Waypoint(start.getX()*10 + 5, start.getY()*10 + 5, start.getDir());
         for (int i = 1; i <= obstacles.length; i++) {
             switch (obstacles[i-1].getDirection()) {
                 case UP:

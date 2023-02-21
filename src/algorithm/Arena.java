@@ -56,7 +56,6 @@ public class Arena {
         }
     }
 
-
     // currently unused, may not be necessary
     public boolean validCell(Waypoint p) {
         int x = p.getCoordinateX();

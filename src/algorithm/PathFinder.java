@@ -119,6 +119,7 @@ public class PathFinder {
         boolean isLeftPossible = true, isRightPossible = true;
 
         // assuming the robot moves forward by one grid cell
+        // TODO: check one more grid ahead?
         straight = new Cell(col-(int)Math.cos(angle), row+(int)Math.sin(angle));
         if (g.validCell(straight)) {
             newPoint = new Waypoint(a.getPos().getCoordinateX()-FORWARD_MOVEMENT*(int)Math.cos(angle),
@@ -128,7 +129,7 @@ public class PathFinder {
 
         // checks for on the spot turn, with buffer of 2 cells
         // left
-        for (int i = 0; i<=2; i++) {
+        for (int i = 0; i<=3; i++) {
             left = new Cell(col - 1 * (int) Math.cos(angle) - i * (int) Math.sin(angle),
                     row + 1 * (int) Math.sin(angle) - i * (int) Math.cos(angle));
             if (!g.validCell(left)) {
@@ -144,7 +145,7 @@ public class PathFinder {
 
 
         //right
-        for (int i = 0; i<=2; i++) {
+        for (int i = 0; i<=3; i++) {
             right = new Cell(col - 1 * (int) Math.cos(angle) + i * (int) Math.sin(angle),
                     row + 1 * (int) Math.sin(angle) + i * (int) Math.cos(angle));
             if (!g.validCell(right)) {

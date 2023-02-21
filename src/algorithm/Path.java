@@ -57,7 +57,7 @@ public class Path {
             }
 
             if (pdir == Direction.UP || pdir == Direction.DOWN) {
-                for (int i = py; i != y; i += y>py ? 1 : -1) {
+                for (int i = py; i != (y>py ? y+1 : y-1); i += y>py ? 1 : -1) {
                     cur = new CarCoordinate(px, i, pdir);
                     list.add(cur);
                 }

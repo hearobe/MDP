@@ -16,7 +16,7 @@ public class Constants {
     static final int BACKWARD_RIGHT_TURN_HORI = 25;
     static final int BACKWARD_RIGHT_TURN_VERT = 45;
 
-    static final int STRAIGHT_COST = 2;
-    static final int FORWARD_TURN_COST = 6;
-    static final int BACKWARD_TURN_COST = 10;
+    static final int STRAIGHT_COST = 100;
+    static final int FORWARD_TURN_COST = 600;
+    static final int BACKWARD_TURN_COST = 1200;
 }

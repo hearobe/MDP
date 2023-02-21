@@ -50,6 +50,8 @@ public class Car {
 		this.yCoord = k.y;
 		this.dir = k.dir;
 	}
-	
-	 
+
+	public CarCoordinate getCarCoordinate() {
+		return new CarCoordinate(this.xCoord, this.yCoord, this.dir);
+	}
 }

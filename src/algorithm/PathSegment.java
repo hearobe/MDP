@@ -66,9 +66,11 @@ public class PathSegment implements Comparable<PathSegment> {
             case FORWARD_LEFT_TURN:
             case FORWARD_RIGHT_TURN:
                 gcost = FORWARD_TURN_COST + parent.getGcost();
+                break;
             case BACKWARD_LEFT_TURN:
             case BACKWARD_RIGHT_TURN:
                 gcost = BACKWARD_TURN_COST + parent.getGcost();
+                break;
         }
     }
 

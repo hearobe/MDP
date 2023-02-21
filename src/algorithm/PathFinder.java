@@ -38,7 +38,7 @@ public class PathFinder {
                     PathSegment curMove = lastMove;
                     PathSegment curParent;
                     do {
-                        curParent = cur.getParent();
+                        curParent = curMove.getParent();
                         pathSegments.add(0,curMove);
                         curMove = curParent;
                     } while (curParent != null);
@@ -88,23 +88,6 @@ public class PathFinder {
         return null;
     }
 
-//    public Path getPath() {
-//        if (lastMove == null) {
-//            return null;
-//        }
-//        ArrayList<PathSegment> pathSegments = new ArrayList<PathSegment>();
-//        PathSegment cur = lastMove;
-//        PathSegment curParent;
-//        do {
-//            curParent = cur.getParent();
-//            pathSegments.add(0,cur);
-//            cur = curParent;
-//        } while (curParent != null);
-//
-//        Path path = new Path(pathSegments);
-//        return path;
-//    }
-
     public List<PathSegment> getCandidatePathSegments(PathSegment a, Arena g) {
         LinkedList<PathSegment> candidates = new LinkedList<>();
         double angle;
@@ -112,16 +95,16 @@ public class PathFinder {
         int col = a.getPos().getCoordinateX()/10;
 
         switch (a.pos.getDirection()){
-            case NORTH:
+            case UP:
                 angle = Math.PI/2;
                 break;
-            case SOUTH:
+            case DOWN:
                 angle = 3*Math.PI/2;
                 break;
-            case EAST:
+            case RIGHT:
                 angle = Math.PI;
                 break;
-            case WEST:
+            case LEFT:
                 angle = 0;
                 break;
             default:
@@ -227,100 +210,100 @@ public class PathFinder {
 
     public MovementType directionChange(Waypoint pos, Waypoint endPos) {
         switch(pos.getDirection()) {
-            case NORTH:
+            case UP:
                 if(endPos.getCoordinateY() > pos.getCoordinateY()) {
                     if(endPos.getCoordinateX() > pos.getCoordinateX()) {
-                        endPos.setDirection(EAST);
+                        endPos.setDirection(RIGHT);
                         return FORWARD_RIGHT_TURN;
                     }
                     else if(endPos.getCoordinateX() < pos.getCoordinateX()) {
-                        endPos.setDirection(WEST);
+                        endPos.setDirection(LEFT);
                         return FORWARD_LEFT_TURN;
                     }
-                    endPos.setDirection(NORTH);
+                    endPos.setDirection(UP);
                     return FORWARD;
                 } else {
                     if(endPos.getCoordinateX() > pos.getCoordinateX()) {
-                        endPos.setDirection(WEST);
+                        endPos.setDirection(LEFT);
                         return BACKWARD_RIGHT_TURN;
                     }
                     else if(endPos.getCoordinateX() < pos.getCoordinateX()) {
-                        endPos.setDirection(EAST);
+                        endPos.setDirection(RIGHT);
                         return BACKWARD_LEFT_TURN;
                     }
-                    endPos.setDirection(NORTH);
+                    endPos.setDirection(UP);
                     return BACKWARD;
                 }
 
-            case SOUTH:
+            case DOWN:
                 if(endPos.getCoordinateY() > pos.getCoordinateY()) {
                     if(endPos.getCoordinateX() > pos.getCoordinateX()) {
-                        endPos.setDirection(WEST);
+                        endPos.setDirection(LEFT);
                         return BACKWARD_LEFT_TURN;
                     }
                     else if(endPos.getCoordinateX() < pos.getCoordinateX()) {
-                        endPos.setDirection(EAST);
+                        endPos.setDirection(RIGHT);
                         return BACKWARD_RIGHT_TURN;
                     }
-                    endPos.setDirection(SOUTH);
+                    endPos.setDirection(DOWN);
                     return BACKWARD;
 
                 } else {
                     if(endPos.getCoordinateX() > pos.getCoordinateX()) {
-                        endPos.setDirection(EAST);
+                        endPos.setDirection(RIGHT);
                         return FORWARD_LEFT_TURN;
                     }
                     else if(endPos.getCoordinateX() < pos.getCoordinateX()) {
-                        endPos.setDirection(WEST);
+                        endPos.setDirection(LEFT);
                         return FORWARD_RIGHT_TURN;
                     }
-                    endPos.setDirection(SOUTH);
+                    endPos.setDirection(DOWN);
                     return FORWARD;
                 }
 
-            case WEST:
+            case LEFT:
                 if(endPos.getCoordinateX() > pos.getCoordinateX()) {
                     if (endPos.getCoordinateY() > pos.getCoordinateY()) {
-                        endPos.setDirection(SOUTH);
+                        endPos.setDirection(DOWN);
                         return BACKWARD_RIGHT_TURN;
                     } else if (endPos.getCoordinateY() < pos.getCoordinateY()) {
-                        endPos.setDirection(NORTH);
+                        endPos.setDirection(UP);
                         return BACKWARD_LEFT_TURN;
                     }
-                    endPos.setDirection(WEST);
+                    endPos.setDirection(LEFT);
                     return BACKWARD;
                 } else {
                     if (endPos.getCoordinateY() > pos.getCoordinateY()) {
-                        endPos.setDirection(NORTH);
+                        endPos.setDirection(UP);
                         return FORWARD_RIGHT_TURN;
                     } else if (endPos.getCoordinateY() < pos.getCoordinateY()) {
-                        endPos.setDirection(SOUTH);
+                        endPos.setDirection(DOWN);
                         return FORWARD_LEFT_TURN;
                     }
-                    endPos.setDirection(WEST);
+                    endPos.setDirection(LEFT);
                     return FORWARD;
                 }
 
-            case EAST:
+            case RIGHT:
                 if(endPos.getCoordinateX() > pos.getCoordinateX()) {
                     if (endPos.getCoordinateY() > pos.getCoordinateY()) {
-                        endPos.setDirection(NORTH);
+                        endPos.setDirection(UP);
                         return FORWARD_LEFT_TURN;
                     } else if (endPos.getCoordinateY() < pos.getCoordinateY()) {
-                        endPos.setDirection(SOUTH);
+                        endPos.setDirection(DOWN);
                         return FORWARD_RIGHT_TURN;
                     }
-                    endPos.setDirection(EAST);
+                    endPos.setDirection(RIGHT);
                     return FORWARD;
                 } else {
                     if (endPos.getCoordinateY() > pos.getCoordinateY()) {
-                        endPos.setDirection(SOUTH);
+                        endPos.setDirection(DOWN);
                         return BACKWARD_LEFT_TURN;
                     } else if (endPos.getCoordinateY() < pos.getCoordinateY()) {
-                        endPos.setDirection(NORTH);
+                        endPos.setDirection(UP);
                         return BACKWARD_RIGHT_TURN;
                     }
-                    endPos.setDirection(EAST);
+                    endPos.setDirection(RIGHT);
                     return BACKWARD;
                 }
             default:

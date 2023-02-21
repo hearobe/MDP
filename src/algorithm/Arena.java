@@ -1,10 +1,6 @@
 package algorithm;
 
-import java.util.ArrayList;
-
 import static algorithm.Constants.*;
-import static algorithm.Direction.*;
-import static algorithm.Direction.LEFT;
 
 public class Arena {
 
@@ -52,19 +48,12 @@ public class Arena {
                         continue;
                     }
                     if (j == xCoordinate && k == yCoordinate) {
-                        grid[k][j].setBuffer(true);
+                        grid[k][j].setObstacle(true);
                     }
-                    grid[k][j].setObstacle(true);
+                    grid[k][j].setBuffer(true);
                 }
             }
         }
-
-//        for (int i = 0; i<20; i++) {
-//            grid[0][i].setObstacle(true);
-//            grid[19][i].setObstacle(true);
-//            grid[i][0].setObstacle(true);
-//            grid[i][19].setObstacle(true);
-//        }
     }
 
 
@@ -84,6 +73,6 @@ public class Arena {
         if (x < 0 || y < 0 || x > 19 || y > 19) {
             return false;
         }
-        return !grid[y][x].isObstacle();
+        return !(grid[y][x].isObstacle() || grid[y][x].isBuffer());
     }
 }

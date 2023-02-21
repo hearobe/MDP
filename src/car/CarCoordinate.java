@@ -24,4 +24,8 @@ public class CarCoordinate {
 	public Direction getDir() {
 		return dir;
 	}
+
+	public String toString() {
+		return "("+ x + ", " + y + ")  " + dir;
+	}
 }

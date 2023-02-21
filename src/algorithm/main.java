@@ -15,7 +15,7 @@ public class main {
         Direction[] obstacleDirection = new Direction[] {DOWN, DOWN, LEFT, DOWN,LEFT};
         arena.setObstacles(obstacleX, obstacleY, obstacleDirection);
 
-        PathSequencer p = new PathSequencer(arena, new CarCoordinate(1,1, Direction.UP));
+        PathSequencer p = new PathSequencer(arena, new CarCoordinate(2,2, Direction.UP));
         List<List<CarCoordinate>> carPath = p.getPath();
 
         for(List<CarCoordinate> pathSegment : carPath) {

@@ -24,21 +24,71 @@ public class Path {
     public List<CarCoordinate> getCarCoordinates() {
         ArrayList<CarCoordinate> list = new ArrayList<>();
         CarCoordinate cur;
+        double angle;
         for (PathSegment e: path) {
+            System.out.println(e.toString());
             if (e.type == null || e.type == MovementType.FORWARD || e.type == MovementType.BACKWARD) {
                 cur = new CarCoordinate(e.pos.getCoordinateX()/10, e.pos.getCoordinateY()/10, e.pos.getDirection());
                 list.add(cur);
-            } else {
-                if (e.pos.getDirection() == Direction.RIGHT || e.pos.getDirection() == Direction.LEFT) {
-                    cur = new CarCoordinate(e.parent.pos.getCoordinateX()/10, e.pos.getCoordinateY()/10, e.pos.getDirection());
-                    list.add(cur);
-                    list.add(new CarCoordinate(e.pos.getCoordinateX()/10, e.pos.getCoordinateY()/10, e.pos.getDirection()));
-                } else {
-                    cur = new CarCoordinate(e.pos.getCoordinateX()/10, e.parent.pos.getCoordinateY()/10, e.pos.getDirection());
-                    list.add(cur);
-                    list.add(new CarCoordinate(e.pos.getCoordinateX()/10, e.pos.getCoordinateY()/10, e.pos.getDirection()));
-                }
+                continue;
             }
+
+            int x = e.pos.getCoordinateX()/10, y = e.pos.getCoordinateY()/10;
+            int px = e.parent.pos.getCoordinateX()/10, py = e.parent.pos.getCoordinateY()/10;
+            Direction dir = e.pos.getDirection(), pdir = e.parent.pos.getDirection();
+            MovementType type = e.type;
+
+            switch (pdir){
+                case UP:
+                    angle = Math.PI/2;
+                    break;
+                case DOWN:
+                    angle = 3*Math.PI/2;
+                    break;
+                case RIGHT:
+                    angle = Math.PI;
+                    break;
+                case LEFT:
+                    angle = 0;
+                    break;
+                default:
+                    System.out.println("Error");
+                    return null;
+            }
+
+            if (pdir == Direction.UP || pdir == Direction.DOWN) {
+                for (int i = py; i != y; i += y>py ? 1 : -1) {
+                    cur = new CarCoordinate(px, i, pdir);
+                    list.add(cur);
+                }
+                for (int j = px; j != x; j += x>px ? 1 : -1) {
+                    cur = new CarCoordinate(j, y, dir);
+                    list.add(cur);
+                }
+            } else {
+                for (int j = px; j != x; j += x>px ? 1 : -1) {
+                    cur = new CarCoordinate(j, py, pdir);
+                    list.add(cur);
+                }
+                for (int i = py; i != y; i += y>py ? 1 : -1) {
+                    cur = new CarCoordinate(x, i, dir);
+                    list.add(cur);
+                }
+
+            }
+            list.add(new CarCoordinate(x, y, dir));
+//            else {
+//
+//                if (e.pos.getDirection() == Direction.RIGHT || e.pos.getDirection() == Direction.LEFT) {
+//                    cur = new CarCoordinate(e.parent.pos.getCoordinateX()/10, e.pos.getCoordinateY()/10, e.pos.getDirection());
+//                    list.add(cur);
+//                    list.add(new CarCoordinate(e.pos.getCoordinateX()/10, e.pos.getCoordinateY()/10, e.pos.getDirection()));
+//                } else {
+//                    cur = new CarCoordinate(e.pos.getCoordinateX()/10, e.parent.pos.getCoordinateY()/10, e.pos.getDirection());
+//                    list.add(cur);
+//                    list.add(new CarCoordinate(e.pos.getCoordinateX()/10, e.pos.getCoordinateY()/10, e.pos.getDirection()));
+//                }
+//            }
         }
         return list;
     }

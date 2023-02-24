@@ -17,8 +17,8 @@ public class ArenaDimensions{
     public static final int OBSTACLE_DIRECTION_WIDTH = ARENA_CELL_SIZE;
     public static final int OBSTACLE_DIRECTION_HEIGHT = ARENA_CELL_SIZE / 4;
 
-    public static final int STARTZONE_ROW = 2;
-    public static final int STARTZONE_COL = 2;
+    public static final int STARTZONE_ROW = 3;
+    public static final int STARTZONE_COL = 3;
 
 
 

@@ -95,16 +95,16 @@ public class PathSequencer {
         for (int i = 1; i <= obstacles.length; i++) {
             switch (obstacles[i-1].getDirection()) {
                 case UP:
-                    goals[i] = new Waypoint(obstacles[i-1].getCoordinateX(), obstacles[i-1].getCoordinateY() + 25, Direction.values()[(UP.ordinal()+2) % 4]);
+                    goals[i] = new Waypoint(obstacles[i-1].getCoordinateX(), obstacles[i-1].getCoordinateY() + 35, Direction.values()[(UP.ordinal()+2) % 4]);
                     break;
                 case DOWN:
-                    goals[i] = new Waypoint(obstacles[i-1].getCoordinateX(), obstacles[i-1].getCoordinateY() - 25, Direction.values()[(DOWN.ordinal()+2) % 4]);
+                    goals[i] = new Waypoint(obstacles[i-1].getCoordinateX(), obstacles[i-1].getCoordinateY() - 35, Direction.values()[(DOWN.ordinal()+2) % 4]);
                     break;
                 case RIGHT:
-                    goals[i] = new Waypoint(obstacles[i-1].getCoordinateX() + 25, obstacles[i-1].getCoordinateY(), Direction.values()[(RIGHT.ordinal()+2) % 4]);
+                    goals[i] = new Waypoint(obstacles[i-1].getCoordinateX() + 35, obstacles[i-1].getCoordinateY(), Direction.values()[(RIGHT.ordinal()+2) % 4]);
                     break;
                 case LEFT:
-                    goals[i] = new Waypoint(obstacles[i-1].getCoordinateX() - 25, obstacles[i-1].getCoordinateY(), Direction.values()[(LEFT.ordinal()+2) % 4]);
+                    goals[i] = new Waypoint(obstacles[i-1].getCoordinateX() - 35, obstacles[i-1].getCoordinateY(), Direction.values()[(LEFT.ordinal()+2) % 4]);
                     break;
                 default:
                     System.out.println("Error in calcGoals");

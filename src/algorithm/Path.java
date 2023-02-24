@@ -26,7 +26,7 @@ public class Path {
         CarCoordinate cur;
         double angle;
         for (PathSegment e: path) {
-            System.out.println(e.toString());
+//            System.out.println(e.toString());
             if (e.type == null || e.type == MovementType.FORWARD || e.type == MovementType.BACKWARD) {
                 cur = new CarCoordinate(e.pos.getCoordinateX()/10, e.pos.getCoordinateY()/10, e.pos.getDirection());
                 list.add(cur);
@@ -90,6 +90,7 @@ public class Path {
 //                }
 //            }
         }
+        list.add(list.get(list.size()-1));
         return list;
     }
 }

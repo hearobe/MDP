@@ -7,16 +7,16 @@ public class Constants {
     static final int FORWARD_MOVEMENT = 10;
     static final int BACKWARD_MOVEMENT = 10;
     static final int FORWARD_LEFT_TURN_HORI = 25;
-    static final int FORWARD_LEFT_TURN_VERT = 5;
+    static final int FORWARD_LEFT_TURN_VERT = 15;
     static final int FORWARD_RIGHT_TURN_HORI = 25;
-    static final int FORWARD_RIGHT_TURN_VERT = 5;
+    static final int FORWARD_RIGHT_TURN_VERT = 15;
     // backward left turn occurs when vehicle is in reverse, with front wheels turned towards the left
     static final int BACKWARD_LEFT_TURN_HORI = 25;
     static final int BACKWARD_LEFT_TURN_VERT = 45;
     static final int BACKWARD_RIGHT_TURN_HORI = 25;
     static final int BACKWARD_RIGHT_TURN_VERT = 45;
 
-    static final int STRAIGHT_COST = 100;
-    static final int FORWARD_TURN_COST = 600;
-    static final int BACKWARD_TURN_COST = 1200;
+    static final int STRAIGHT_COST = 10;
+    static final int FORWARD_TURN_COST = 60;
+    static final int BACKWARD_TURN_COST = 120;
 }

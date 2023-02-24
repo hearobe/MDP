@@ -105,6 +105,7 @@ public class NetworkMain {
         return null;
     }
 
+    // TODO: create thread to listen for messages
     public String receiveMessage() {
         if(socket == null) {
             LOGGER.warning("Not connected to "+name);
@@ -151,11 +152,13 @@ public class NetworkMain {
     }
 
     public static void main(String[] args) {
-        NetworkMain test = new NetworkMain("0.0.0.0", 12345, "ImageRec");
-        NetworkMain test2 = new NetworkMain("0.0.0.0", 5005, "RPI");
+        Thread listener = new Thread();
+
+//        NetworkMain test = new NetworkMain("0.0.0.0", 12345, "ImageRec");
+        NetworkMain test2 = new NetworkMain("192.168.4.4", 4334, "RPI");
         try {
             test2.connect();
-            test.connect();
+//            test.connect();
         } catch (UnknownHostException e) {
             LOGGER.warning("Connection Failed: UnknownHostException\n" + e.toString());
             return;
@@ -167,9 +170,12 @@ public class NetworkMain {
             e.printStackTrace();
             return;
         }
-        test.sendMessage("Hello");
-        System.out.println(test.receiveMessage());
-        while(true);
+        test2.sendMessage("Hello");
+//        System.out.println(test2.receiveMessage());
+//        while(true);
 //		disconnect();
+
+        Listener l = new Listener(test2);
+        l.run();
     }
 }

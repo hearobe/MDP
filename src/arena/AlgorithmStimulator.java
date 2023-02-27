@@ -132,7 +132,7 @@ public class AlgorithmStimulator extends Application {
 
 		pathSequencer = new PathSequencer(arena, this.car.getCarCoordinate());
 //
-		List<List<CarCoordinate>> carPath = pathSequencer.getPath();
+		List<List<CarCoordinate>> carPath = pathSequencer.getCarCoordinates();
 
 //		for(List<CarCoordinate> l : carPath) {
 //			for(CarCoordinate c: l)

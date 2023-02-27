@@ -14,6 +14,7 @@ public class PathSequencer {
     private Path[][] pathMatrix;
     private int[][] costMatrix;
     private Waypoint[] goals;
+    private int[] pathSequence = null;
 
     public PathSequencer(Arena arena, CarCoordinate start) {
         this.arena = arena;
@@ -21,9 +22,8 @@ public class PathSequencer {
         calcGoals(start);
     }
 
-    public List<List<CarCoordinate>> getPath() {
+    public void getPath() {
         fillPathMatrix();
-        List<List<CarCoordinate>> carCoordinates = new ArrayList<>();
         Waypoint[] obstacles = arena.getObstacles();
 
         boolean isPathPossible = true;
@@ -56,9 +56,36 @@ public class PathSequencer {
         }
         System.out.println(Arrays.toString(minPermutation));
 
-        carCoordinates.add(pathMatrix[0][minPermutation[0]].getCarCoordinates());
-        for (int i = 1; i<minPermutation.length; i++) {
-            carCoordinates.add(pathMatrix[minPermutation[i-1]][minPermutation[i]].getCarCoordinates());
+        pathSequence = Arrays.copyOf(minPermutation, minPermutation.length);
+    }
+
+    public String getSTMPath() {
+        if (pathSequence == null) {
+            getPath();
+        }
+        String s = "STM";
+
+        s += ",";
+        s += pathMatrix[0][pathSequence[0]].getSTMPath();
+        for (int i = 1; i<pathSequence.length; i++) {
+            s += ",";
+            s += pathMatrix[pathSequence[i-1]][pathSequence[i]].getSTMPath();
+        }
+        s += "!";
+
+        System.out.println(s);
+        return s;
+    }
+
+    public List<List<CarCoordinate>> getCarCoordinates() {
+        if (pathSequence == null) {
+            getPath();
+        }
+
+        List<List<CarCoordinate>> carCoordinates = new ArrayList<>();
+        carCoordinates.add(pathMatrix[0][pathSequence[0]].getCarCoordinates());
+        for (int i = 1; i<pathSequence.length; i++) {
+            carCoordinates.add(pathMatrix[pathSequence[i-1]][pathSequence[i]].getCarCoordinates());
         }
 
         return carCoordinates;
@@ -82,29 +109,57 @@ public class PathSequencer {
             }
         }
 
-        for (int i = 0; i<n; i++) {
-            System.out.println(Arrays.toString(costMatrix[i]));
-        }
+//        for (int i = 0; i<n; i++) {
+//            System.out.println(Arrays.toString(costMatrix[i]));
+//        }
     }
 
 
     private void calcGoals(CarCoordinate start) {
         Waypoint[] obstacles = arena.getObstacles();
+        for (Waypoint e: obstacles) {
+            System.out.println(e.toString());
+        }
+
         goals = new Waypoint[obstacles.length+1];
         goals[0] = new Waypoint(start.getX()*10 + 5, start.getY()*10 + 5, start.getDir());
         for (int i = 1; i <= obstacles.length; i++) {
             switch (obstacles[i-1].getDirection()) {
                 case UP:
-                    goals[i] = new Waypoint(obstacles[i-1].getCoordinateX(), obstacles[i-1].getCoordinateY() + 35, Direction.values()[(UP.ordinal()+2) % 4]);
+                    if (obstacles[i-1].getCoordinateX() == 0) {
+                        goals[i] = new Waypoint(obstacles[i-1].getCoordinateX()+1, obstacles[i-1].getCoordinateY() + 35, Direction.values()[(UP.ordinal()+2) % 4]);
+                    } else if (obstacles[i-1].getCoordinateX() == 19) {
+                        goals[i] = new Waypoint(obstacles[i-1].getCoordinateX()-1, obstacles[i-1].getCoordinateY() + 35, Direction.values()[(UP.ordinal()+2) % 4]);
+                    } else {
+                        goals[i] = new Waypoint(obstacles[i-1].getCoordinateX(), obstacles[i-1].getCoordinateY() + 35, Direction.values()[(UP.ordinal()+2) % 4]);
+                    }
                     break;
                 case DOWN:
-                    goals[i] = new Waypoint(obstacles[i-1].getCoordinateX(), obstacles[i-1].getCoordinateY() - 35, Direction.values()[(DOWN.ordinal()+2) % 4]);
+                    if (obstacles[i-1].getCoordinateX() == 0) {
+                        goals[i] = new Waypoint(obstacles[i-1].getCoordinateX()+1, obstacles[i-1].getCoordinateY() - 35, Direction.values()[(DOWN.ordinal()+2) % 4]);
+                    } else if (obstacles[i-1].getCoordinateX() == 19) {
+                        goals[i] = new Waypoint(obstacles[i-1].getCoordinateX()-1, obstacles[i-1].getCoordinateY() - 35, Direction.values()[(DOWN.ordinal()+2) % 4]);
+                    } else {
+                        goals[i] = new Waypoint(obstacles[i-1].getCoordinateX(), obstacles[i-1].getCoordinateY() - 35, Direction.values()[(DOWN.ordinal()+2) % 4]);
+                    }
                     break;
                 case RIGHT:
-                    goals[i] = new Waypoint(obstacles[i-1].getCoordinateX() + 35, obstacles[i-1].getCoordinateY(), Direction.values()[(RIGHT.ordinal()+2) % 4]);
+                    if (obstacles[i-1].getCoordinateY() == 0) {
+                        goals[i] = new Waypoint(obstacles[i-1].getCoordinateX() + 35, obstacles[i-1].getCoordinateY()+1, Direction.values()[(RIGHT.ordinal()+2) % 4]);
+                    } else if (obstacles[i-1].getCoordinateY() == 19) {
+                        goals[i] = new Waypoint(obstacles[i-1].getCoordinateX() + 35, obstacles[i-1].getCoordinateY()-1, Direction.values()[(RIGHT.ordinal()+2) % 4]);
+                    } else {
+                        goals[i] = new Waypoint(obstacles[i-1].getCoordinateX() + 35, obstacles[i-1].getCoordinateY(), Direction.values()[(RIGHT.ordinal()+2) % 4]);
+                    }
                     break;
                 case LEFT:
-                    goals[i] = new Waypoint(obstacles[i-1].getCoordinateX() - 35, obstacles[i-1].getCoordinateY(), Direction.values()[(LEFT.ordinal()+2) % 4]);
+                    if (obstacles[i-1].getCoordinateY() == 0) {
+                        goals[i] = new Waypoint(obstacles[i-1].getCoordinateX() - 35, obstacles[i-1].getCoordinateY()+1, Direction.values()[(LEFT.ordinal()+2) % 4]);
+                    } else if (obstacles[i-1].getCoordinateY() == 19) {
+                        goals[i] = new Waypoint(obstacles[i-1].getCoordinateX() - 35, obstacles[i-1].getCoordinateY()-1, Direction.values()[(LEFT.ordinal()+2) % 4]);
+                    } else {
+                        goals[i] = new Waypoint(obstacles[i-1].getCoordinateX() - 35, obstacles[i-1].getCoordinateY(), Direction.values()[(LEFT.ordinal()+2) % 4]);
+                    }
                     break;
                 default:
                     System.out.println("Error in calcGoals");

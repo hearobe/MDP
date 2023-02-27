@@ -21,12 +21,46 @@ public class Path {
         return path;
     }
 
+    public String getSTMPath() {
+        String s = "";
+        for (PathSegment e: path) {
+//            System.out.println(e.toString());
+            if (e.type == null) {
+                continue;
+            }
+            switch(e.type) {
+                case FORWARD:
+                    s += "w";
+                    break;
+                case BACKWARD:
+                    s += "s";
+                    break;
+                case FORWARD_LEFT_TURN:
+                    s += "z";
+                    break;
+                case BACKWARD_LEFT_TURN:
+                    s += "q";
+                    break;
+                case FORWARD_RIGHT_TURN:
+                    s += "x";
+                    break;
+                case BACKWARD_RIGHT_TURN:
+                    s += "e";
+                    break;
+                default:
+                    continue;
+            }
+        }
+
+        return s+"i";
+    }
+
     public List<CarCoordinate> getCarCoordinates() {
         ArrayList<CarCoordinate> list = new ArrayList<>();
         CarCoordinate cur;
         double angle;
         for (PathSegment e: path) {
-//            System.out.println(e.toString());
+            System.out.println(e.toString());
             if (e.type == null || e.type == MovementType.FORWARD || e.type == MovementType.BACKWARD) {
                 cur = new CarCoordinate(e.pos.getCoordinateX()/10, e.pos.getCoordinateY()/10, e.pos.getDirection());
                 list.add(cur);

@@ -1,14 +1,23 @@
 package network;
 
+import algorithm.Arena;
+import algorithm.Direction;
+import algorithm.PathSequencer;
+import car.CarCoordinate;
+
 import java.net.Socket;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Scanner;
 import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
+
+import static algorithm.Direction.*;
 
 public class NetworkMain {
     private String ip = "0.0.0.0";//"192.168.4.4";
@@ -18,11 +27,11 @@ public class NetworkMain {
     private static final Logger LOGGER = Logger.getLogger(NetworkMain.class.getName());
 
 
-    public Socket socket = null;
+    public static Socket socket = null;
 
 
-    private BufferedWriter out;
-    private BufferedReader in;
+    private static BufferedWriter out;
+    private static BufferedReader in;
     private InputStream in1;
 
     public NetworkMain(String ip, int port, String name) {
@@ -130,10 +139,10 @@ public class NetworkMain {
         return null;
     }
 
-    public void disconnect() {
-        LOGGER.info("Disconnecting from "+name+"...");
+    public static void disconnect() {
+        LOGGER.info("Disconnecting...");
         if(socket == null) {
-            LOGGER.warning("Not connected to "+name+".");
+            LOGGER.warning("Not connected");
             return;
         }
         else {
@@ -144,7 +153,7 @@ public class NetworkMain {
                 socket = null;
                 return;
             } catch (Exception e) {
-                LOGGER.warning("Disconnecting from "+name+" failed: " + e.toString());
+                LOGGER.warning("Disconnecting failed");
                 e.printStackTrace();
                 return;
             }
@@ -152,9 +161,9 @@ public class NetworkMain {
     }
 
     public static void main(String[] args) {
-        Thread listener = new Thread();
-
-//        NetworkMain test = new NetworkMain("0.0.0.0", 12345, "ImageRec");
+//        Thread listener = new Thread();
+//
+////        NetworkMain test = new NetworkMain("0.0.0.0", 12345, "ImageRec");
         NetworkMain test2 = new NetworkMain("192.168.4.4", 4334, "RPI");
         try {
             test2.connect();
@@ -170,12 +179,45 @@ public class NetworkMain {
             e.printStackTrace();
             return;
         }
+
         test2.sendMessage("Hello");
-//        System.out.println(test2.receiveMessage());
+        String androidInput = test2.receiveMessage();
+
+        String[] obstacles = androidInput.split(",!");
+        String[] curObs;
+        int[] x = new int[obstacles.length], y = new int[obstacles.length];
+        Direction[] dir = new Direction[obstacles.length];
+        int i = 0;
+        for (String obstacle: obstacles) {
+            System.out.println(obstacle);
+            curObs = obstacle.split(",");
+            System.out.println(Arrays.toString(curObs));
+            x[i] = Integer.parseInt(curObs[0]);
+            y[i] = Integer.parseInt(curObs[1]);
+            dir[i] = Direction.parseDir(curObs[2]);
+            i++;
+        }
+
+        Arena arena = new Arena();
+        arena.setObstacles(x, y, dir);
+        PathSequencer pathSequencer = new PathSequencer(arena, new CarCoordinate(1,1, UP));
+        String path = pathSequencer.getSTMPath();
+
+        test2.sendMessage(pathSequencer.getSTMPath());
+//        try{
+//            test2.socket.close();
+//        } catch (IOException e) {
+//            LOGGER.warning("Connection Failed: IOException\n" + e.toString());
+//            return;
+//        }
+
+        test2.disconnect();
+
+//        test2.sendMessage("STM, wwwi, aaawwwwawi!");
 //        while(true);
 //		disconnect();
 
-        Listener l = new Listener(test2);
-        l.run();
+//        Listener l = new Listener(test2);
+//        l.run();
     }
 }

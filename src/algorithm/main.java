@@ -16,13 +16,13 @@ public class main {
         arena.setObstacles(obstacleX, obstacleY, obstacleDirection);
 
         PathSequencer p = new PathSequencer(arena, new CarCoordinate(2,2, Direction.UP));
-        List<List<CarCoordinate>> carPath = p.getPath();
+//        List<List<CarCoordinate>> carPath = p.getPath();
 
-        for(List<CarCoordinate> pathSegment : carPath) {
-            for(CarCoordinate carCoord: pathSegment) {
-                System.out.println(carCoord.toString());
-            }
-        }
+//        for(List<CarCoordinate> pathSegment : carPath) {
+//            for(CarCoordinate carCoord: pathSegment) {
+//                System.out.println(carCoord.toString());
+//            }
+//        }
     }
 }
 

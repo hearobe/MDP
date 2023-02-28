@@ -3,6 +3,7 @@ package network;
 import algorithm.Arena;
 import algorithm.Direction;
 import algorithm.PathSequencer;
+import car.Car;
 import car.CarCoordinate;
 
 import java.net.Socket;
@@ -161,13 +162,9 @@ public class NetworkMain {
     }
 
     public static void main(String[] args) {
-//        Thread listener = new Thread();
-//
-////        NetworkMain test = new NetworkMain("0.0.0.0", 12345, "ImageRec");
         NetworkMain test2 = new NetworkMain("192.168.4.4", 4334, "RPI");
         try {
             test2.connect();
-//            test.connect();
         } catch (UnknownHostException e) {
             LOGGER.warning("Connection Failed: UnknownHostException\n" + e.toString());
             return;
@@ -180,44 +177,45 @@ public class NetworkMain {
             return;
         }
 
-        test2.sendMessage("Hello");
+//        test2.sendMessage("Hello");
         String androidInput = test2.receiveMessage();
 
-        String[] obstacles = androidInput.split(",!");
-        String[] curObs;
-        int[] x = new int[obstacles.length], y = new int[obstacles.length];
-        Direction[] dir = new Direction[obstacles.length];
-        int i = 0;
-        for (String obstacle: obstacles) {
-            System.out.println(obstacle);
-            curObs = obstacle.split(",");
-            System.out.println(Arrays.toString(curObs));
-            x[i] = Integer.parseInt(curObs[0]);
-            y[i] = Integer.parseInt(curObs[1]);
-            dir[i] = Direction.parseDir(curObs[2]);
-            i++;
+        // should refactor this part, but I'm lazy
+        String[] locations = androidInput.split(",!");
+        String[] curLocation;
+        int[] x = new int[locations.length-1], y = new int[locations.length-1];
+        Direction[] dir = new Direction[locations.length-1];
+
+        curLocation = locations[0].split(",");
+        CarCoordinate start = new CarCoordinate(Integer.parseInt(curLocation[0]), Integer.parseInt(curLocation[1]), Direction.parseDir(curLocation[2]));
+        for (int i = 1; i < locations.length; i++) {
+            System.out.println(locations[i]);
+            curLocation = locations[i].split(",");
+            System.out.println(Arrays.toString(curLocation));
+            x[i-1] = Integer.parseInt(curLocation[0]);
+            y[i-1] = Integer.parseInt(curLocation[1]);
+            dir[i-1] = Direction.parseDir(curLocation[2]);
         }
+        System.out.println(Arrays.toString(dir));
+
+//        int[] x = new int[] {3, 10, 17, 7, 15};
+//        int[] y = new int[] {14, 9, 7, 1, 15};
+//        Direction[] dir = new Direction[] {DOWN, DOWN, LEFT, UP,LEFT};
+//        CarCoordinate start = new CarCoordinate(1,1,UP);
+
+//        int[] x = new int[] {6,11, 18};
+//        int[] y = new int[] {9,5, 18};
+//        Direction[] dir = new Direction[] {DOWN, LEFT, LEFT};
+//        CarCoordinate start = new CarCoordinate(1,1,UP);
 
         Arena arena = new Arena();
         arena.setObstacles(x, y, dir);
-        PathSequencer pathSequencer = new PathSequencer(arena, new CarCoordinate(1,1, UP));
-        String path = pathSequencer.getSTMPath();
+        PathSequencer pathSequencer = new PathSequencer(arena, start);
+        System.out.println(pathSequencer.getSTMPath());
+
+        test2.sendMessage(pathSequencer.getAndroidOrder());
 
         test2.sendMessage(pathSequencer.getSTMPath());
-//        try{
-//            test2.socket.close();
-//        } catch (IOException e) {
-//            LOGGER.warning("Connection Failed: IOException\n" + e.toString());
-//            return;
-//        }
-
         test2.disconnect();
-
-//        test2.sendMessage("STM, wwwi, aaawwwwawi!");
-//        while(true);
-//		disconnect();
-
-//        Listener l = new Listener(test2);
-//        l.run();
     }
 }

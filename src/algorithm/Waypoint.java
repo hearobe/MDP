@@ -20,6 +20,10 @@ public class Waypoint {
         return "("+ CoordinateX + ", " + CoordinateY + ")  " + direction;
     }
 
+//    public String getAndroidString() {
+//        return CoordinateX/10 + ", " + CoordinateY/10;
+//    }
+
     public boolean equals(Waypoint a) {
         return this.getCoordinateX() == a.getCoordinateX() &&
                 this.getCoordinateY() == a.getCoordinateY() &&

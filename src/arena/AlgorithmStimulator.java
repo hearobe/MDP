@@ -120,13 +120,13 @@ public class AlgorithmStimulator extends Application {
 //		int[] obstacleY = new int[] {18, 8, 4, 18, 14};
 //		Direction[] obstacleDirection = new Direction[] {DOWN, DOWN, LEFT, DOWN,LEFT};
 
-		int[] obstacleX = new int[] {3, 10, 17, 7, 15};
-		int[] obstacleY = new int[] {14, 9, 7, 1, 15};
-		Direction[] obstacleDirection = new Direction[] {DOWN, DOWN, LEFT, UP,LEFT};
+		int[] obstacleX = new int[] {0};
+		int[] obstacleY = new int[] {5};
+		Direction[] obstacleDirection = new Direction[] {UP};
 
 		arena.setObstacles(obstacleX, obstacleY, obstacleDirection);
 
-		startingPosition = new CarCoordinate(1,1, RIGHT);
+		startingPosition = new CarCoordinate(1,1, UP);
 		car = new Car(2,2, RIGHT);
 		car.update(startingPosition);
 

@@ -30,10 +30,38 @@ public class Path {
             }
             switch(e.type) {
                 case FORWARD:
-                    s += "w";
+                    if (s.length() > 0 && s.charAt(s.length()-1) == 'w') {
+                        try {
+                            if (Integer.parseInt(String.valueOf(s.charAt(s.length()-2))) == 4) {
+                                s += "w";
+                            } else {
+                                int multiplier = Integer.parseInt(String.valueOf(s.charAt(s.length()-2))) + 1;
+//                                System.out.println(multiplier);
+                                s = s.substring(0, s.length()-2) + multiplier + "w";
+                            }
+                        } catch (NumberFormatException | StringIndexOutOfBoundsException q) {
+                            s = s.substring(0, s.length()-1) + "2w";
+                        }
+                    } else {
+                        s += "w";
+                    }
                     break;
                 case BACKWARD:
-                    s += "s";
+                    if (s.length() > 0 && s.charAt(s.length()-1) == 's') {
+                        try {
+                            if (Integer.parseInt(String.valueOf(s.charAt(s.length()-2))) == 4) {
+                                s += "s";
+                            } else {
+                                int multiplier = Integer.parseInt(String.valueOf(s.charAt(s.length()-2))) + 1;
+//                                System.out.println(multiplier);
+                                s = s.substring(0, s.length()-2) + multiplier + "s";
+                            }
+                        } catch (NumberFormatException | StringIndexOutOfBoundsException q) {
+                            s = s.substring(0, s.length()-1) + "2s";
+                        }
+                    } else {
+                        s += "s";
+                    }
                     break;
                 case FORWARD_LEFT_TURN:
                     s += "z";
@@ -58,9 +86,8 @@ public class Path {
     public List<CarCoordinate> getCarCoordinates() {
         ArrayList<CarCoordinate> list = new ArrayList<>();
         CarCoordinate cur;
-        double angle;
         for (PathSegment e: path) {
-            System.out.println(e.toString());
+//            System.out.println(e.toString());
             if (e.type == null || e.type == MovementType.FORWARD || e.type == MovementType.BACKWARD) {
                 cur = new CarCoordinate(e.pos.getCoordinateX()/10, e.pos.getCoordinateY()/10, e.pos.getDirection());
                 list.add(cur);
@@ -70,25 +97,6 @@ public class Path {
             int x = e.pos.getCoordinateX()/10, y = e.pos.getCoordinateY()/10;
             int px = e.parent.pos.getCoordinateX()/10, py = e.parent.pos.getCoordinateY()/10;
             Direction dir = e.pos.getDirection(), pdir = e.parent.pos.getDirection();
-            MovementType type = e.type;
-
-            switch (pdir){
-                case UP:
-                    angle = Math.PI/2;
-                    break;
-                case DOWN:
-                    angle = 3*Math.PI/2;
-                    break;
-                case RIGHT:
-                    angle = Math.PI;
-                    break;
-                case LEFT:
-                    angle = 0;
-                    break;
-                default:
-                    System.out.println("Error");
-                    return null;
-            }
 
             if (pdir == Direction.UP || pdir == Direction.DOWN) {
                 for (int i = py; i != (y>py ? y+1 : y-1); i += y>py ? 1 : -1) {
@@ -111,18 +119,6 @@ public class Path {
 
             }
             list.add(new CarCoordinate(x, y, dir));
-//            else {
-//
-//                if (e.pos.getDirection() == Direction.RIGHT || e.pos.getDirection() == Direction.LEFT) {
-//                    cur = new CarCoordinate(e.parent.pos.getCoordinateX()/10, e.pos.getCoordinateY()/10, e.pos.getDirection());
-//                    list.add(cur);
-//                    list.add(new CarCoordinate(e.pos.getCoordinateX()/10, e.pos.getCoordinateY()/10, e.pos.getDirection()));
-//                } else {
-//                    cur = new CarCoordinate(e.pos.getCoordinateX()/10, e.parent.pos.getCoordinateY()/10, e.pos.getDirection());
-//                    list.add(cur);
-//                    list.add(new CarCoordinate(e.pos.getCoordinateX()/10, e.pos.getCoordinateY()/10, e.pos.getDirection()));
-//                }
-//            }
         }
         list.add(list.get(list.size()-1));
         return list;

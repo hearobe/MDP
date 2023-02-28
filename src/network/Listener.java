@@ -15,7 +15,7 @@ public class Listener extends Thread {
         while (true) {
             String s = rpi.receiveMessage();
             buffer.add(s);
-            System.out.println(s);
+//            System.out.println(s);
         }
     }
 }

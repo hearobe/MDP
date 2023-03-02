@@ -3,9 +3,8 @@ package algorithm;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Logger;
 
-import car.CarCoordinate;
+import car.Coordinate;
 
 import static algorithm.Direction.*;
 
@@ -14,10 +13,10 @@ public class PathSequencer {
     private Arena arena;
     private Path[][] pathMatrix;
     private int[][] costMatrix;
-    private Waypoint[] goals;
+    private Coordinate[] goals;
     private int[] pathSequence = null;
 
-    public PathSequencer(Arena arena, CarCoordinate start) {
+    public PathSequencer(Arena arena, Coordinate start) {
         this.arena = arena;
 
         calcGoals(start);
@@ -25,11 +24,10 @@ public class PathSequencer {
 
     public void getPath() {
         fillPathMatrix();
-        Waypoint[] obstacles = arena.getObstacles();
+        Coordinate[] obstacles = arena.getObstacles();
 
         boolean isPathPossible = true;
-        long minCost = Long.MAX_VALUE;
-        long curCost = 0;
+        long minCost = Long.MAX_VALUE, curCost;
         int[] minPermutation = new int[obstacles.length];
 
         Permute p = new Permute(obstacles.length);
@@ -55,10 +53,8 @@ public class PathSequencer {
                 minPermutation = Arrays.copyOf(a, a.length);
             }
         }
-        System.out.println(Arrays.toString(minPermutation));
 
         pathSequence = Arrays.copyOf(minPermutation, minPermutation.length);
-//        System.out.println(pathSequence);
     }
 
     public String getSTMPath() {
@@ -88,17 +84,15 @@ public class PathSequencer {
             s += pathSequence[i];
         }
 
-        System.out.println("Android order: " + s);
-
         return s;
     }
 
-    public List<List<CarCoordinate>> getCarCoordinates() {
+    public List<List<Coordinate>> getCarCoordinates() {
         if (pathSequence == null) {
             getPath();
         }
 
-        List<List<CarCoordinate>> carCoordinates = new ArrayList<>();
+        List<List<Coordinate>> carCoordinates = new ArrayList<>();
         carCoordinates.add(pathMatrix[0][pathSequence[0]].getCarCoordinates());
         for (int i = 1; i<pathSequence.length; i++) {
             carCoordinates.add(pathMatrix[pathSequence[i-1]][pathSequence[i]].getCarCoordinates());
@@ -111,71 +105,67 @@ public class PathSequencer {
         int n = goals.length;
         pathMatrix = new Path[n][n];
         costMatrix = new int[n][n];
+
+        // find all possible paths between any 2 goals
         for (int i = 0; i<n; i++) {
             for (int j = 1; j<n; j++) {
                 if (i == j) {
                     continue;
                 }
-//                System.out.println("finding path between " + i + " and " + j);
                 pathMatrix[i][j] = pathFinder.findPathBetweenTwoNodes(goals[i], goals[j], arena);
                 if (pathMatrix[i][j] != null) {
                     costMatrix[i][j] = pathMatrix[i][j].getCost();
-//                    System.out.println("path between " + i + " and " + j + " found.");
                 }
             }
-        }
-
-        for (int i = 0; i<n; i++) {
-            System.out.println(Arrays.toString(costMatrix[i]));
         }
     }
 
 
-    private void calcGoals(CarCoordinate start) {
-        Waypoint[] obstacles = arena.getObstacles();
-//        for (Waypoint e: obstacles) {
-//            System.out.println(e.toString());
-//        }
+    private void calcGoals(Coordinate start) {
+        Coordinate[] obstacles = arena.getObstacles();
 
-        goals = new Waypoint[obstacles.length+1];
-        goals[0] = new Waypoint(start.getX()*10 + 5, start.getY()*10 + 5, start.getDir());
+        goals = new Coordinate[obstacles.length+1];
+        goals[0] = start;
         for (int i = 1; i <= obstacles.length; i++) {
-            switch (obstacles[i-1].getDirection()) {
+            int x = obstacles[i-1].getX(), y = obstacles[i-1].getY();
+            Direction d = obstacles[i-1].getDir();
+
+            switch (d) {
                 case UP:
-                    if (obstacles[i-1].getCoordinateX()/10 == 0) {
-                        goals[i] = new Waypoint(obstacles[i-1].getCoordinateX()+10, obstacles[i-1].getCoordinateY() + 30, Direction.values()[(UP.ordinal()+2) % 4]);
-                    } else if (obstacles[i-1].getCoordinateX()/10 >= 19) {
-                        goals[i] = new Waypoint(obstacles[i-1].getCoordinateX()-10, obstacles[i-1].getCoordinateY() + 30, Direction.values()[(UP.ordinal()+2) % 4]);
+                    if (x == 0) {
+                        goals[i] = new Coordinate(x+1, y + 3, d.turnBack());
+                    } else if (x == 19) {
+                        goals[i] = new Coordinate(x-1, y + 3, d.turnBack());
                     } else {
-                        goals[i] = new Waypoint(obstacles[i-1].getCoordinateX(), obstacles[i-1].getCoordinateY() + 30, Direction.values()[(UP.ordinal()+2) % 4]);
+                        goals[i] = new Coordinate(x, y + 3, d.turnBack());
                     }
                     break;
                 case DOWN:
-                    if (obstacles[i-1].getCoordinateX()/10 == 0) {
-                        goals[i] = new Waypoint(obstacles[i-1].getCoordinateX()+10, obstacles[i-1].getCoordinateY() - 30, Direction.values()[(DOWN.ordinal()+2) % 4]);
-                    } else if (obstacles[i-1].getCoordinateX()/10 >= 19) {
-                        goals[i] = new Waypoint(obstacles[i-1].getCoordinateX()-10, obstacles[i-1].getCoordinateY() - 30, Direction.values()[(DOWN.ordinal()+2) % 4]);
+                    if (x == 0) {
+                        goals[i] = new Coordinate(x+1, y - 3, d.turnBack());
+                    } else if (x == 19) {
+                        goals[i] = new Coordinate(x-1, y - 3, d.turnBack());
                     } else {
-                        goals[i] = new Waypoint(obstacles[i-1].getCoordinateX(), obstacles[i-1].getCoordinateY() - 30, Direction.values()[(DOWN.ordinal()+2) % 4]);
+                        goals[i] = new Coordinate(x, y - 3, d.turnBack());
                     }
                     break;
                 case RIGHT:
-                    if (obstacles[i-1].getCoordinateY()/10 == 0) {
-                        goals[i] = new Waypoint(obstacles[i-1].getCoordinateX() + 30, obstacles[i-1].getCoordinateY()+10, Direction.values()[(RIGHT.ordinal()+2) % 4]);
-                    } else if (obstacles[i-1].getCoordinateY()/10 >= 19) {
-                        goals[i] = new Waypoint(obstacles[i-1].getCoordinateX() + 30, obstacles[i-1].getCoordinateY()-10, Direction.values()[(RIGHT.ordinal()+2) % 4]);
+                    if (y == 0) {
+                        goals[i] = new Coordinate(x + 3, y+1, d.turnBack());
+                    } else if (y == 19) {
+                        goals[i] = new Coordinate(x + 3, y-1, d.turnBack());
                     } else {
-                        goals[i] = new Waypoint(obstacles[i-1].getCoordinateX() + 30, obstacles[i-1].getCoordinateY(), Direction.values()[(RIGHT.ordinal()+2) % 4]);
+                        goals[i] = new Coordinate(x + 3, y, d.turnBack());
                     }
                     break;
                 case LEFT:
-                    if (obstacles[i-1].getCoordinateY()/10 == 0) {
-                        goals[i] = new Waypoint(obstacles[i-1].getCoordinateX() - 30, obstacles[i-1].getCoordinateY()+10, Direction.values()[(LEFT.ordinal()+2) % 4]);
-                    } else if (obstacles[i-1].getCoordinateY()/10 >= 19) {
+                    if (y == 0) {
+                        goals[i] = new Coordinate(x - 3, y+1, d.turnBack());
+                    } else if (y == 19) {
                         System.out.println("reached");
-                        goals[i] = new Waypoint(obstacles[i-1].getCoordinateX() - 30, obstacles[i-1].getCoordinateY()-10, Direction.values()[(LEFT.ordinal()+2) % 4]);
+                        goals[i] = new Coordinate(x - 3, y-1, d.turnBack());
                     } else {
-                        goals[i] = new Waypoint(obstacles[i-1].getCoordinateX() - 30, obstacles[i-1].getCoordinateY(), Direction.values()[(LEFT.ordinal()+2) % 4]);
+                        goals[i] = new Coordinate(x - 3, y, d.turnBack());
                     }
                     break;
                 default:
@@ -183,11 +173,6 @@ public class PathSequencer {
                     break;
             }
         }
-
-//        for (Waypoint e: goals) {
-//            System.out.println("goal");
-//            System.out.println(e.toString());
-//        }
     }
 
 

@@ -6,12 +6,9 @@ import java.util.List;
 import algorithm.Arena;
 import algorithm.Cell;
 import algorithm.Direction;
-import algorithm.Path;
-import algorithm.PathFinder;
 import algorithm.PathSequencer;
-import algorithm.Waypoint;
 import car.Car;
-import car.CarCoordinate;
+import car.Coordinate;
 import javafx.animation.AnimationTimer;
 
 // Java Program to create a button and add it to the stage
@@ -40,7 +37,7 @@ public class AlgorithmStimulator extends Application {
 	private Label controlLabel, timerHeaderLabel, loadArenaLabel, resetArenaLabel, startArenaLabel, filler;
 	private GridPane controlMenu;
 	private StopWatch stopWatch;
-	private CarCoordinate startingPosition;
+	private Coordinate startingPosition;
 	private static Arena arena = new Arena();
 
 	private static Canvas map;
@@ -53,16 +50,16 @@ public class AlgorithmStimulator extends Application {
 
 	class myAnimationTimer extends AnimationTimer {
 		private Canvas map;
-		private List<List<CarCoordinate>> carPath;
+		private List<List<Coordinate>> carPath;
 		private int i = 0;
 		private int j = 0;
 //		private long startTiming = 0;
 		private int iterations = 0;
 		private long lastUpdate = 0 ;
-		private CarCoordinate startingPosition;
+		private Coordinate startingPosition;
 		private Car car;
 
-		public myAnimationTimer(Canvas map,  List<List<CarCoordinate>> carPath, Car car, CarCoordinate startPosition) {
+		public myAnimationTimer(Canvas map, List<List<Coordinate>> carPath, Car car, Coordinate startPosition) {
 			this.map = map;
 			this.carPath = carPath;
 			this.startingPosition = startPosition;
@@ -116,23 +113,23 @@ public class AlgorithmStimulator extends Application {
 		map = new Canvas(ArenaDimensions.ARENA_STIMULATOR_WIDTH,ArenaDimensions.ARENA_STIMULATOR_HEIGHT);
 		arena = new Arena();
 
-//		int[] obstacleX = new int[] {7, 8, 17, 1, 14};
-//		int[] obstacleY = new int[] {18, 8, 4, 18, 14};
-//		Direction[] obstacleDirection = new Direction[] {DOWN, DOWN, LEFT, DOWN,LEFT};
+		int[] obstacleX = new int[] {7, 8, 17, 1, 14};
+		int[] obstacleY = new int[] {18, 8, 4, 18, 14};
+		Direction[] obstacleDirection = new Direction[] {DOWN, DOWN, LEFT, DOWN,LEFT};
 
-		int[] obstacleX = new int[] {6, 10, 11};
-		int[] obstacleY = new int[] {17, 10, 10};
-		Direction[] obstacleDirection = new Direction[] {RIGHT, LEFT,RIGHT};
+//		int[] obstacleX = new int[] {19};
+//		int[] obstacleY = new int[] {19};
+//		Direction[] obstacleDirection = new Direction[] {DOWN};
 
 		arena.setObstacles(obstacleX, obstacleY, obstacleDirection);
 
-		startingPosition = new CarCoordinate(1,1, UP);
+		startingPosition = new Coordinate(1,1, UP);
 		car = new Car(2,2, RIGHT);
 		car.update(startingPosition);
 
-		pathSequencer = new PathSequencer(arena, this.car.getCarCoordinate());
+		pathSequencer = new PathSequencer(arena, this.car.getCoordinate());
 
-		List<List<CarCoordinate>> carPath;
+		List<List<Coordinate>> carPath;
 		try {
 			carPath = pathSequencer.getCarCoordinates();
 		} catch (NullPointerException e) {
@@ -140,11 +137,6 @@ public class AlgorithmStimulator extends Application {
 			return;
 		}
 
-
-//		for(List<CarCoordinate> l : carPath) {
-//			for(CarCoordinate c: l)
-////				System.out.println(c.toString());
-//		}
 		drawMap(map, arena);
 		drawCar(map, car);
 

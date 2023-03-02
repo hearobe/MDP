@@ -3,8 +3,7 @@ package network;
 import algorithm.Arena;
 import algorithm.Direction;
 import algorithm.PathSequencer;
-import car.Car;
-import car.CarCoordinate;
+import car.Coordinate;
 
 import java.net.Socket;
 import java.awt.image.BufferedImage;
@@ -12,13 +11,10 @@ import java.io.*;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Scanner;
 import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
-
-import static algorithm.Direction.*;
 
 public class NetworkMain {
     private String ip = "0.0.0.0";//"192.168.4.4";
@@ -187,7 +183,7 @@ public class NetworkMain {
         Direction[] dir = new Direction[locations.length-1];
 
         curLocation = locations[0].split(",");
-        CarCoordinate start = new CarCoordinate(Integer.parseInt(curLocation[0]), Integer.parseInt(curLocation[1]), Direction.parseDir(curLocation[2]));
+        Coordinate start = new Coordinate(Integer.parseInt(curLocation[0]), Integer.parseInt(curLocation[1]), Direction.parseDir(curLocation[2]));
         for (int i = 1; i < locations.length; i++) {
             System.out.println(locations[i]);
             curLocation = locations[i].split(",");

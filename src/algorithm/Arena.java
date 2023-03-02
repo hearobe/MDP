@@ -1,11 +1,15 @@
 package algorithm;
 
+import car.Coordinate;
+
+import java.util.Arrays;
+
 import static algorithm.Constants.*;
 
 public class Arena {
 
     public Cell[][] grid;
-    private Waypoint[] obstacles;
+    private Coordinate[] obstacles;
 
 
     public Arena() {
@@ -22,20 +26,18 @@ public class Arena {
         }
     }
 
-    public Waypoint[] getObstacles() {
+    public Coordinate[] getObstacles() {
         return obstacles;
     }
 
     public void setObstacles(int[] x, int[] y, Direction[] d) {
         int n = x.length;
-        obstacles = new Waypoint[n];
-        for (int i = 0; i<n; i++) {
-            obstacles[i] = new Waypoint(x[i]*10 + 5, y[i]*10 + 5, d[i]);
-        }
+        obstacles = new Coordinate[n];
 
         for (int i = 0; i<n; i++) {
             int xCoordinate = x[i];
             int yCoordinate = y[i];
+            obstacles[i] = new Coordinate(xCoordinate, yCoordinate, d[i]);
 
             grid[yCoordinate][xCoordinate].setImageDirection(d[i]);
 
@@ -54,16 +56,6 @@ public class Arena {
                 }
             }
         }
-    }
-
-    // currently unused, may not be necessary
-    public boolean validCell(Waypoint p) {
-        int x = p.getCoordinateX();
-        int y = p.getCoordinateY();
-        if (x < 0 || y < 0 || x > 199 || y > 199) {
-            return false;
-        }
-        return !grid[p.getCoordinateY()/10][p.getCoordinateX()/10].isObstacle();
     }
 
     public boolean validCell(Cell c) {

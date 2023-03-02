@@ -45,13 +45,13 @@ public class Car {
 		this.xCoord = x;
 	}
 	
-	public void update(CarCoordinate k) {
+	public void update(Coordinate k) {
 		this.xCoord = k.x;
 		this.yCoord = k.y;
 		this.dir = k.dir;
 	}
 
-	public CarCoordinate getCarCoordinate() {
-		return new CarCoordinate(this.xCoord, this.yCoord, this.dir);
+	public Coordinate getCoordinate() {
+		return new Coordinate(this.xCoord, this.yCoord, this.dir);
 	}
 }

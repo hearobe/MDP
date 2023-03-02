@@ -1,8 +1,6 @@
 package algorithm;
 
-import car.CarCoordinate;
-
-import java.util.List;
+import car.Coordinate;
 
 import static algorithm.Direction.*;
 
@@ -15,7 +13,7 @@ public class main {
         Direction[] obstacleDirection = new Direction[] {DOWN, DOWN, LEFT, DOWN,LEFT};
         arena.setObstacles(obstacleX, obstacleY, obstacleDirection);
 
-        PathSequencer p = new PathSequencer(arena, new CarCoordinate(2,2, Direction.UP));
+        PathSequencer p = new PathSequencer(arena, new Coordinate(2,2, Direction.UP));
 //        List<List<CarCoordinate>> carPath = p.getPath();
 
 //        for(List<CarCoordinate> pathSegment : carPath) {

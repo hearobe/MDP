@@ -2,7 +2,7 @@ package algorithm;
 
 import java.util.ArrayList;
 import java.util.List;
-import car.CarCoordinate;
+import car.Coordinate;
 
 public class Path {
     List<PathSegment> path;
@@ -24,7 +24,6 @@ public class Path {
     public String getSTMPath() {
         String s = "";
         for (PathSegment e: path) {
-//            System.out.println(e.toString());
             if (e.type == null) {
                 continue;
             }
@@ -36,7 +35,6 @@ public class Path {
                                 s += "w";
                             } else {
                                 int multiplier = Integer.parseInt(String.valueOf(s.charAt(s.length()-2))) + 1;
-//                                System.out.println(multiplier);
                                 s = s.substring(0, s.length()-2) + multiplier + "w";
                             }
                         } catch (NumberFormatException | StringIndexOutOfBoundsException q) {
@@ -53,7 +51,6 @@ public class Path {
                                 s += "s";
                             } else {
                                 int multiplier = Integer.parseInt(String.valueOf(s.charAt(s.length()-2))) + 1;
-//                                System.out.println(multiplier);
                                 s = s.substring(0, s.length()-2) + multiplier + "s";
                             }
                         } catch (NumberFormatException | StringIndexOutOfBoundsException q) {
@@ -83,42 +80,40 @@ public class Path {
         return s+"i";
     }
 
-    public List<CarCoordinate> getCarCoordinates() {
-        ArrayList<CarCoordinate> list = new ArrayList<>();
-        CarCoordinate cur;
+    public List<Coordinate> getCarCoordinates() {
+        ArrayList<Coordinate> list = new ArrayList<>();
+        Coordinate cur;
         for (PathSegment e: path) {
-//            System.out.println(e.toString());
             if (e.type == null || e.type == MovementType.FORWARD || e.type == MovementType.BACKWARD) {
-                cur = new CarCoordinate(e.pos.getCoordinateX()/10, e.pos.getCoordinateY()/10, e.pos.getDirection());
-                list.add(cur);
+                list.add(e.getPos());
                 continue;
             }
 
-            int x = e.pos.getCoordinateX()/10, y = e.pos.getCoordinateY()/10;
-            int px = e.parent.pos.getCoordinateX()/10, py = e.parent.pos.getCoordinateY()/10;
-            Direction dir = e.pos.getDirection(), pdir = e.parent.pos.getDirection();
+            int x = e.pos.getX(), y = e.pos.getY();
+            int px = e.parent.pos.getX(), py = e.parent.pos.getY();
+            Direction dir = e.pos.getDir(), pdir = e.parent.pos.getDir();
 
             if (pdir == Direction.UP || pdir == Direction.DOWN) {
                 for (int i = py; i != (y>py ? y+1 : y-1); i += y>py ? 1 : -1) {
-                    cur = new CarCoordinate(px, i, pdir);
+                    cur = new Coordinate(px, i, pdir);
                     list.add(cur);
                 }
                 for (int j = px; j != x; j += x>px ? 1 : -1) {
-                    cur = new CarCoordinate(j, y, dir);
+                    cur = new Coordinate(j, y, dir);
                     list.add(cur);
                 }
             } else {
                 for (int j = px; j != x; j += x>px ? 1 : -1) {
-                    cur = new CarCoordinate(j, py, pdir);
+                    cur = new Coordinate(j, py, pdir);
                     list.add(cur);
                 }
                 for (int i = py; i != y; i += y>py ? 1 : -1) {
-                    cur = new CarCoordinate(x, i, dir);
+                    cur = new Coordinate(x, i, dir);
                     list.add(cur);
                 }
 
             }
-            list.add(new CarCoordinate(x, y, dir));
+            list.add(new Coordinate(x, y, dir));
         }
         list.add(list.get(list.size()-1));
         return list;

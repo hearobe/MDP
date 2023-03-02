@@ -3,6 +3,7 @@ package algorithm;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Logger;
 
 import car.CarCoordinate;
 
@@ -74,7 +75,6 @@ public class PathSequencer {
         }
         s += "!";
 
-//        System.out.println(s);
         return s;
     }
 
@@ -82,10 +82,10 @@ public class PathSequencer {
         if (pathSequence == null) {
             getPath();
         }
-        String s = "AN, ObstacleOrder,";
+        String s = "AN,ObstacleOrder,";
 
         for (int i = 0; i<pathSequence.length; i++) {
-            s += pathSequence[0];
+            s += pathSequence[i];
         }
 
         System.out.println("Android order: " + s);
@@ -184,10 +184,10 @@ public class PathSequencer {
             }
         }
 
-        for (Waypoint e: goals) {
-            System.out.println("goal");
-            System.out.println(e.toString());
-        }
+//        for (Waypoint e: goals) {
+//            System.out.println("goal");
+//            System.out.println(e.toString());
+//        }
     }
 
 

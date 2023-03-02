@@ -213,9 +213,14 @@ public class NetworkMain {
         PathSequencer pathSequencer = new PathSequencer(arena, start);
         System.out.println(pathSequencer.getSTMPath());
 
-        test2.sendMessage(pathSequencer.getAndroidOrder());
+        try {
+            test2.sendMessage(pathSequencer.getAndroidOrder());
 
-        test2.sendMessage(pathSequencer.getSTMPath());
+            test2.sendMessage(pathSequencer.getSTMPath());
+        } catch (NullPointerException e) {
+            LOGGER.warning("No path found");
+        }
+
         test2.disconnect();
     }
 }

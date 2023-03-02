@@ -143,8 +143,10 @@ public class PathFinder {
 //            candidates.add(getPathSegment(a, newPoint));
 //        }
 
-        for (int i = 0; i <= 2; i++) {
-            for (int j = 0; j <= 3; j++) {
+        // vertical displacement i goes up to 2 (one more than actual movement)
+        // this is to check that the STM has enough clearance at the top since it will eat into some cells
+        for (int i = 0; i <= 1; i++) {
+            for (int j = 0; j <= 2; j++) {
                 left = new Cell(col - i * (int) Math.cos(angle) - j * (int) Math.sin(angle),
                         row + i * (int) Math.sin(angle) - j * (int) Math.cos(angle));
                 if (!g.validCell(left)) {
@@ -175,8 +177,8 @@ public class PathFinder {
 //            candidates.add(getPathSegment(a, newPoint));
 //        }
 
-        for (int i = 0; i <= 2; i++) {
-            for (int j = 0; j <= 3; j++) {
+        for (int i = 0; i <= 1; i++) {
+            for (int j = 0; j <= 2; j++) {
                 right = new Cell(col - i * (int) Math.cos(angle) + j * (int) Math.sin(angle),
                         row + i * (int) Math.sin(angle) + j * (int) Math.cos(angle));
                 if (!g.validCell(right)) {
@@ -202,6 +204,7 @@ public class PathFinder {
             candidates.add(getPathSegment(a, newPoint));
         }
 
+        // TODO: check with STM if the y-displacement is 5 or 4
         for (int i = 0; i <= 4; i++) {
             left = new Cell(col + i * (int) Math.cos(angle),
                     row - i * (int) Math.sin(angle));
@@ -209,6 +212,7 @@ public class PathFinder {
                 isLeftPossible = false;
                 break;
             }
+            // TODO: check if this is necessary with STM
             left = new Cell(col + i * (int) Math.cos(angle) + 1 * (int) Math.sin(angle),
                     row - i * (int) Math.sin(angle) + 1 * (int) Math.cos(angle));
             if (!g.validCell(left)) {

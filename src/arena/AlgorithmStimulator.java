@@ -120,9 +120,9 @@ public class AlgorithmStimulator extends Application {
 //		int[] obstacleY = new int[] {18, 8, 4, 18, 14};
 //		Direction[] obstacleDirection = new Direction[] {DOWN, DOWN, LEFT, DOWN,LEFT};
 
-		int[] obstacleX = new int[] {0};
-		int[] obstacleY = new int[] {5};
-		Direction[] obstacleDirection = new Direction[] {UP};
+		int[] obstacleX = new int[] {6, 10, 11};
+		int[] obstacleY = new int[] {17, 10, 10};
+		Direction[] obstacleDirection = new Direction[] {RIGHT, LEFT,RIGHT};
 
 		arena.setObstacles(obstacleX, obstacleY, obstacleDirection);
 
@@ -131,8 +131,15 @@ public class AlgorithmStimulator extends Application {
 		car.update(startingPosition);
 
 		pathSequencer = new PathSequencer(arena, this.car.getCarCoordinate());
-//
-		List<List<CarCoordinate>> carPath = pathSequencer.getCarCoordinates();
+
+		List<List<CarCoordinate>> carPath;
+		try {
+			carPath = pathSequencer.getCarCoordinates();
+		} catch (NullPointerException e) {
+			System.out.println("No path found");
+			return;
+		}
+
 
 //		for(List<CarCoordinate> l : carPath) {
 //			for(CarCoordinate c: l)

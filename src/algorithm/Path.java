@@ -60,17 +60,23 @@ public class Path {
                         s += "s";
                     }
                     break;
-                case FORWARD_LEFT_TURN:
+                case FORWARD_SHARP_LEFT_TURN:
                     s += "z";
                     break;
                 case BACKWARD_LEFT_TURN:
                     s += "q";
                     break;
-                case FORWARD_RIGHT_TURN:
+                case FORWARD_SHARP_RIGHT_TURN:
                     s += "x";
                     break;
                 case BACKWARD_RIGHT_TURN:
                     s += "e";
+                    break;
+                case FORWARD_LEFT_TURN:
+                    s += "a";
+                    break;
+                case FORWARD_RIGHT_TURN:
+                    s += "d";
                     break;
                 default:
                     continue;

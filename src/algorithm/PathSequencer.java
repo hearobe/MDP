@@ -6,6 +6,8 @@ import java.util.List;
 
 import car.Coordinate;
 
+import static algorithm.Constants.*;
+import static algorithm.Constants.BACKWARD_MOVEMENT;
 import static algorithm.Direction.*;
 
 public class PathSequencer {
@@ -115,11 +117,92 @@ public class PathSequencer {
                 pathMatrix[i][j] = pathFinder.findPathBetweenTwoNodes(goals[i], goals[j], arena);
                 if (pathMatrix[i][j] != null) {
                     costMatrix[i][j] = pathMatrix[i][j].getCost();
+                } else if (findAlternativeGoal(i, j)) {
+                    recalculatePaths(i, j);
                 }
             }
         }
     }
 
+    private boolean findAlternativeGoal(int start, int end) {
+        double angle;
+        int row = goals[end].getY();
+        int col = goals[end].getX();
+        Direction d = goals[end].getDir();
+        Coordinate newgoal;
+        Path path;
+
+        switch (d){
+            case UP:
+                angle = Math.PI/2;
+                break;
+            case DOWN:
+                angle = 3*Math.PI/2;
+                break;
+            case RIGHT:
+                angle = Math.PI;
+                break;
+            case LEFT:
+                angle = 0;
+                break;
+            default:
+                System.out.println("Error finding candidates");
+                return false;
+        }
+
+        // try one cell to the left
+        newgoal = new Coordinate(col - 1 * (int) Math.sin(angle),
+                row - 1 * (int) Math.cos(angle), d);
+        path = pathFinder.findPathBetweenTwoNodes(goals[start], newgoal, arena);
+        if (path != null) {
+            goals[end] = newgoal;
+            int cost = path.getCost();
+            newgoal = new Coordinate(col + 1 * (int) Math.sin(angle),
+                    row + 1 * (int) Math.cos(angle), d);
+            Path path2 = pathFinder.findPathBetweenTwoNodes(goals[start], newgoal, arena);
+            if (cost <= path2.getCost()) {
+                pathMatrix[start][end] = path;
+                return true;
+            } else {
+                goals[end] = newgoal;
+                pathMatrix[start][end] = path2;
+                return true;
+            }
+        }
+
+        newgoal = new Coordinate(col + 1 * (int) Math.sin(angle),
+                row + 1 * (int) Math.cos(angle), d);
+        path = pathFinder.findPathBetweenTwoNodes(goals[start], newgoal, arena);
+        if (path != null) {
+            goals[end] = newgoal;
+            pathMatrix[start][end] = path;
+            return true;
+        }
+
+        for (int i = 1; i<=5; i++) {
+            newgoal = new Coordinate(col+i*(int)Math.cos(angle),
+                    row-i*(int)Math.sin(angle), d);
+            path = pathFinder.findPathBetweenTwoNodes(goals[start], newgoal, arena);
+            if (path != null) {
+                goals[end] = newgoal;
+                pathMatrix[start][end] = path;
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private void recalculatePaths(int start, int end) {
+        for (int i = 0; i < start; i++) {
+            pathMatrix[i][end] = pathFinder.findPathBetweenTwoNodes(goals[i], goals[end], arena);
+            if (i == end) {
+                for (int j = 1; j < goals.length; j++) {
+                    pathMatrix[i][j] = pathFinder.findPathBetweenTwoNodes(goals[i], goals[j], arena);
+                }
+            }
+        }
+    }
 
     private void calcGoals(Coordinate start) {
         Coordinate[] obstacles = arena.getObstacles();
@@ -162,7 +245,6 @@ public class PathSequencer {
                     if (y == 0) {
                         goals[i] = new Coordinate(x - 3, y+1, d.turnBack());
                     } else if (y == 19) {
-                        System.out.println("reached");
                         goals[i] = new Coordinate(x - 3, y-1, d.turnBack());
                     } else {
                         goals[i] = new Coordinate(x - 3, y, d.turnBack());

@@ -113,13 +113,13 @@ public class AlgorithmStimulator extends Application {
 		map = new Canvas(ArenaDimensions.ARENA_STIMULATOR_WIDTH,ArenaDimensions.ARENA_STIMULATOR_HEIGHT);
 		arena = new Arena();
 
-		int[] obstacleX = new int[] {7, 8, 17, 1, 14};
-		int[] obstacleY = new int[] {18, 8, 4, 18, 14};
-		Direction[] obstacleDirection = new Direction[] {DOWN, DOWN, LEFT, DOWN,LEFT};
+//		int[] obstacleX = new int[] {7, 8, 17, 1, 14};
+//		int[] obstacleY = new int[] {18, 8, 4, 18, 14};
+//		Direction[] obstacleDirection = new Direction[] {DOWN, DOWN, LEFT, DOWN,LEFT};
 
-//		int[] obstacleX = new int[] {19};
-//		int[] obstacleY = new int[] {19};
-//		Direction[] obstacleDirection = new Direction[] {DOWN};
+		int[] obstacleX = new int[] {19, 0};
+		int[] obstacleY = new int[] {19, 19};
+		Direction[] obstacleDirection = new Direction[] {LEFT, RIGHT};
 
 		arena.setObstacles(obstacleX, obstacleY, obstacleDirection);
 

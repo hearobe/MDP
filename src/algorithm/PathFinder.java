@@ -5,7 +5,6 @@ import car.Coordinate;
 import java.util.*;
 
 import static algorithm.Constants.*;
-import static algorithm.Direction.*;
 import static algorithm.MovementType.*;
 
 public class PathFinder {
@@ -123,44 +122,128 @@ public class PathFinder {
 
         straight = new Cell(col-(int)Math.cos(angle), row+(int)Math.sin(angle));
         if (g.validCell(straight)) {
-            newPoint = new Coordinate(a.getPos().getX()-FORWARD_MOVEMENT*(int)Math.cos(angle),
-                    a.getPos().getY()+FORWARD_MOVEMENT*(int)Math.sin(angle), d);
-            candidates.add(getPathSegment(a, newPoint));
+            newPoint = new Coordinate(col-FORWARD_MOVEMENT*(int)Math.cos(angle),
+                    row+FORWARD_MOVEMENT*(int)Math.sin(angle), d);
+            candidates.add(new PathSegment(a, newPoint, FORWARD));
         }
 
-        for (int i = 0; i <= 1; i++) {
-            for (int j = 0; j <= 2; j++) {
-                left = new Cell(col - i * (int) Math.cos(angle) - j * (int) Math.sin(angle),
-                        row + i * (int) Math.sin(angle) - j * (int) Math.cos(angle));
+        for (int i = 0; i <= SHARP_RIGHT_VERT; i++) {
+            if (i == SHARP_RIGHT_VERT) {
+                for (int j = 0; j <= SHARP_RIGHT_HORI; j++) {
+                    left = new Cell(col - i * (int) Math.cos(angle) - j * (int) Math.sin(angle),
+                            row + i * (int) Math.sin(angle) - j * (int) Math.cos(angle));
+                    if (!g.validCell(left)) {
+                        isLeftPossible = false;
+                        break;
+                    }
+                }
+            }
+        }
+        left = new Cell(col - SHARP_OUTER_CORNER_VERT_CHECK * (int) Math.cos(angle) - SHARP_OUTER_CORNER_HORI_CHECK * (int) Math.sin(angle),
+                row + SHARP_OUTER_CORNER_VERT_CHECK * (int) Math.sin(angle) - SHARP_OUTER_CORNER_HORI_CHECK * (int) Math.cos(angle));
+        if (!g.validCell(left)) {
+            isLeftPossible = false;
+        }
+        if (isLeftPossible) {
+            newPoint = new Coordinate(col - SHARP_LEFT_VERT * (int) Math.cos(angle) - SHARP_LEFT_HORI * (int) Math.sin(angle),
+                    row + SHARP_LEFT_VERT * (int) Math.sin(angle) - SHARP_LEFT_HORI * (int) Math.cos(angle),
+                    d.turnLeft());
+            candidates.add(new PathSegment(a, newPoint, FORWARD_SHARP_LEFT_TURN));
+        }
+
+        for (int i = 0; i <= SHARP_RIGHT_VERT; i++) {
+            if (i == SHARP_RIGHT_VERT) {
+                for (int j = 0; j <= SHARP_RIGHT_HORI; j++) {
+                    right = new Cell(col - i * (int) Math.cos(angle) + j * (int) Math.sin(angle),
+                            row + i * (int) Math.sin(angle) + j * (int) Math.cos(angle));
+                    if (!g.validCell(right)) {
+                        isRightPossible = false;
+                        break;
+                    }
+                }
+            }
+        }
+        right = new Cell(col - SHARP_OUTER_CORNER_VERT_CHECK * (int) Math.cos(angle) + SHARP_OUTER_CORNER_HORI_CHECK * (int) Math.sin(angle),
+                row + SHARP_OUTER_CORNER_VERT_CHECK * (int) Math.sin(angle) + SHARP_OUTER_CORNER_HORI_CHECK * (int) Math.cos(angle));
+        if (!g.validCell(right)) {
+            isRightPossible = false;
+        }
+        if (isRightPossible) {
+            newPoint = new Coordinate(col- SHARP_RIGHT_VERT *(int)Math.cos(angle)+ SHARP_RIGHT_HORI *(int)Math.sin(angle),
+                    row+ SHARP_RIGHT_VERT *(int)Math.sin(angle)+ SHARP_RIGHT_HORI *(int)Math.cos(angle),
+                    d.turnRight());
+            candidates.add(new PathSegment(a, newPoint, FORWARD_SHARP_RIGHT_TURN));
+        }
+
+        // ----------------------------- FORWARD WIDE
+
+        for (int i = 0; i <= FORWARD_LEFT_TURN_VERT; i++) {
+            left = new Cell(col - i * (int) Math.cos(angle),
+                    row + i * (int) Math.sin(angle));
+            if (!g.validCell(left)) {
+                isLeftPossible = false;
+                break;
+            }
+            if (i == INNER_CORNER_VERT_CHECK) {
+                left = new Cell(col - INNER_CORNER_VERT_CHECK * (int) Math.cos(angle) - INNER_CORNER_HORI_CHECK * (int) Math.sin(angle),
+                        row + INNER_CORNER_VERT_CHECK * (int) Math.sin(angle) - INNER_CORNER_HORI_CHECK * (int) Math.cos(angle));
                 if (!g.validCell(left)) {
                     isLeftPossible = false;
                     break;
                 }
             }
+            if (i == FORWARD_LEFT_TURN_VERT) {
+                for (int j = 0; j <= FORWARD_LEFT_TURN_HORI; j++) {
+                    left = new Cell(col - i * (int) Math.cos(angle) - j * (int) Math.sin(angle),
+                            row + i * (int) Math.sin(angle) - j * (int) Math.cos(angle));
+                    if (!g.validCell(left)) {
+                        isLeftPossible = false;
+                        break;
+                    }
+                }
+            }
         }
         if (isLeftPossible) {
-            newPoint = new Coordinate(a.getPos().getX() - FORWARD_LEFT_TURN_VERT * (int) Math.cos(angle) - FORWARD_LEFT_TURN_HORI * (int) Math.sin(angle),
-                    a.getPos().getY() + FORWARD_LEFT_TURN_VERT * (int) Math.sin(angle) - FORWARD_LEFT_TURN_HORI * (int) Math.cos(angle),
+            newPoint = new Coordinate(col - FORWARD_LEFT_TURN_VERT * (int) Math.cos(angle) - FORWARD_LEFT_TURN_HORI * (int) Math.sin(angle),
+                    row + FORWARD_LEFT_TURN_VERT * (int) Math.sin(angle) - FORWARD_LEFT_TURN_HORI * (int) Math.cos(angle),
                     d.turnLeft());
-            candidates.add(getPathSegment(a, newPoint));
+            candidates.add(new PathSegment(a, newPoint, FORWARD_LEFT_TURN));
         }
 
-        for (int i = 0; i <= 1; i++) {
-            for (int j = 0; j <= 2; j++) {
-                right = new Cell(col - i * (int) Math.cos(angle) + j * (int) Math.sin(angle),
-                        row + i * (int) Math.sin(angle) + j * (int) Math.cos(angle));
+        for (int i = 0; i <= FORWARD_RIGHT_TURN_VERT; i++) {
+            right = new Cell(col - i * (int) Math.cos(angle),
+                    row + i * (int) Math.sin(angle));
+            if (!g.validCell(right)) {
+                isRightPossible = false;
+                break;
+            }
+            if (i == INNER_CORNER_VERT_CHECK) { // if block is used to make sure this inner corner is only checked once
+                right = new Cell(col - INNER_CORNER_VERT_CHECK * (int) Math.cos(angle) + INNER_CORNER_HORI_CHECK * (int) Math.sin(angle),
+                        row + INNER_CORNER_VERT_CHECK * (int) Math.sin(angle) + INNER_CORNER_HORI_CHECK * (int) Math.cos(angle));
                 if (!g.validCell(right)) {
                     isRightPossible = false;
                     break;
                 }
             }
+            if (i == FORWARD_RIGHT_TURN_VERT) {
+                for (int j = 0; j <= FORWARD_RIGHT_TURN_HORI; j++) {
+                    right = new Cell(col - i * (int) Math.cos(angle) + j * (int) Math.sin(angle),
+                            row + i * (int) Math.sin(angle) + j * (int) Math.cos(angle));
+                    if (!g.validCell(right)) {
+                        isRightPossible = false;
+                        break;
+                    }
+                }
+            }
         }
         if (isRightPossible) {
-            newPoint = new Coordinate(a.getPos().getX()-FORWARD_RIGHT_TURN_VERT*(int)Math.cos(angle)+FORWARD_RIGHT_TURN_HORI*(int)Math.sin(angle),
-                    a.getPos().getY()+FORWARD_RIGHT_TURN_VERT*(int)Math.sin(angle)+FORWARD_RIGHT_TURN_HORI*(int)Math.cos(angle),
+            newPoint = new Coordinate(col-FORWARD_RIGHT_TURN_VERT*(int)Math.cos(angle)+FORWARD_RIGHT_TURN_HORI*(int)Math.sin(angle),
+                    row+FORWARD_RIGHT_TURN_VERT*(int)Math.sin(angle)+FORWARD_RIGHT_TURN_HORI*(int)Math.cos(angle),
                     d.turnRight());
-            candidates.add(getPathSegment(a, newPoint));
+            candidates.add(new PathSegment(a, newPoint, FORWARD_RIGHT_TURN));
         }
+
+        // -----------------------------
 
         // BACKWARD
         isLeftPossible = true;
@@ -168,29 +251,29 @@ public class PathFinder {
 
         straight = new Cell(col+(int)Math.cos(angle), row-(int)Math.sin(angle));
         if (g.validCell(straight)) {
-            newPoint = new Coordinate(a.getPos().getX()+BACKWARD_MOVEMENT*(int)Math.cos(angle),
-                    a.getPos().getY()-BACKWARD_MOVEMENT*(int)Math.sin(angle),
+            newPoint = new Coordinate(col+BACKWARD_MOVEMENT*(int)Math.cos(angle),
+                    row-BACKWARD_MOVEMENT*(int)Math.sin(angle),
                     d);
-            candidates.add(getPathSegment(a, newPoint));
+            candidates.add(new PathSegment(a, newPoint, BACKWARD));
         }
 
-        // TODO: check with STM if the y-displacement is 5 or 4
-        for (int i = 0; i <= 4; i++) {
+        for (int i = 0; i <= BACKWARD_LEFT_TURN_VERT; i++) {
             left = new Cell(col + i * (int) Math.cos(angle),
                     row - i * (int) Math.sin(angle));
             if (!g.validCell(left)) {
                 isLeftPossible = false;
                 break;
             }
-            // TODO: check if this is necessary with STM
-            left = new Cell(col + i * (int) Math.cos(angle) + 1 * (int) Math.sin(angle),
-                    row - i * (int) Math.sin(angle) + 1 * (int) Math.cos(angle));
-            if (!g.validCell(left)) {
-                isLeftPossible = false;
-                break;
+            if (i == INNER_CORNER_VERT_CHECK) {
+                left = new Cell(col + INNER_CORNER_VERT_CHECK * (int) Math.cos(angle) - INNER_CORNER_HORI_CHECK * (int) Math.sin(angle),
+                        row - INNER_CORNER_VERT_CHECK * (int) Math.sin(angle) - INNER_CORNER_HORI_CHECK * (int) Math.cos(angle));
+                if (!g.validCell(left)) {
+                    isLeftPossible = false;
+                    break;
+                }
             }
-            if (i == 4) {
-                for (int j = 0; j <= 3; j++) {
+            if (i == BACKWARD_LEFT_TURN_VERT) {
+                for (int j = 0; j <= BACKWARD_LEFT_TURN_HORI; j++) {
                     left = new Cell(col + i * (int) Math.cos(angle) - j * (int) Math.sin(angle),
                             row - i * (int) Math.sin(angle) - j * (int) Math.cos(angle));
                     if (!g.validCell(left)) {
@@ -201,26 +284,34 @@ public class PathFinder {
             }
         }
         if (isLeftPossible) {
-            newPoint = new Coordinate(a.getPos().getX() + BACKWARD_LEFT_TURN_VERT * (int) Math.cos(angle) - BACKWARD_LEFT_TURN_HORI * (int) Math.sin(angle),
-                    a.getPos().getY() - BACKWARD_LEFT_TURN_VERT * (int) Math.sin(angle) - BACKWARD_LEFT_TURN_HORI * (int) Math.cos(angle),
+            newPoint = new Coordinate(col + BACKWARD_LEFT_TURN_VERT * (int) Math.cos(angle) - BACKWARD_LEFT_TURN_HORI * (int) Math.sin(angle),
+                    row - BACKWARD_LEFT_TURN_VERT * (int) Math.sin(angle) - BACKWARD_LEFT_TURN_HORI * (int) Math.cos(angle),
                     d.turnRight());
-            candidates.add(getPathSegment(a, newPoint));
+            candidates.add(new PathSegment(a, newPoint, BACKWARD_LEFT_TURN));
         }
 
-        for (int i = 0; i <= 4; i++) {
+        for (int i = 0; i <= BACKWARD_RIGHT_TURN_VERT; i++) {
             right = new Cell(col + i * (int) Math.cos(angle),
                     row - i * (int) Math.sin(angle));
             if (!g.validCell(right)) {
                 isRightPossible = false;
                 break;
             }
-            right = new Cell(col + i * (int) Math.cos(angle) - 1 * (int) Math.sin(angle),
-                    row - i * (int) Math.sin(angle) - 1 * (int) Math.cos(angle));
-            if (!g.validCell(right)) {
-                isRightPossible = false;
+            if (i == INNER_CORNER_VERT_CHECK) { // if block is used to make sure this inner corner is only checked once
+                right = new Cell(col + INNER_CORNER_VERT_CHECK * (int) Math.cos(angle) + INNER_CORNER_HORI_CHECK * (int) Math.sin(angle),
+                        row - INNER_CORNER_VERT_CHECK * (int) Math.sin(angle) + INNER_CORNER_HORI_CHECK * (int) Math.cos(angle));
+                if (!g.validCell(right)) {
+                    isRightPossible = false;
+                }
             }
-            if (i == 4) {
-                for (int j = 0; j <= 3; j++) {
+            if (i == BACKWARD_RIGHT_TURN_VERT) {
+                right = new Cell(col + BACKWARD_RIGHT_OUTER_CORNER_VERT_CHECK * (int) Math.cos(angle) + BACKWARD_RIGHT_OUTER_CORNER_HORI_CHECK * (int) Math.sin(angle),
+                        row - BACKWARD_RIGHT_OUTER_CORNER_HORI_CHECK * (int) Math.sin(angle) + BACKWARD_RIGHT_OUTER_CORNER_HORI_CHECK * (int) Math.cos(angle));
+                if (!g.validCell(right)) {
+                    isRightPossible = false;
+                    break;
+                }
+                for (int j = 0; j <= BACKWARD_RIGHT_TURN_HORI; j++) {
                     right = new Cell(col + i * (int) Math.cos(angle) + j * (int) Math.sin(angle),
                             row - i * (int) Math.sin(angle) + j * (int) Math.cos(angle));
                     if (!g.validCell(right)) {
@@ -231,99 +322,99 @@ public class PathFinder {
             }
         }
         if (isRightPossible) {
-            newPoint = new Coordinate(a.getPos().getX()+BACKWARD_RIGHT_TURN_VERT*(int)Math.cos(angle)+BACKWARD_RIGHT_TURN_HORI*(int)Math.sin(angle),
-                    a.getPos().getY()-BACKWARD_RIGHT_TURN_VERT*(int)Math.sin(angle)+BACKWARD_RIGHT_TURN_HORI*(int)Math.cos(angle),
+            newPoint = new Coordinate(col+BACKWARD_RIGHT_TURN_VERT*(int)Math.cos(angle)+BACKWARD_RIGHT_TURN_HORI*(int)Math.sin(angle),
+                    row-BACKWARD_RIGHT_TURN_VERT*(int)Math.sin(angle)+BACKWARD_RIGHT_TURN_HORI*(int)Math.cos(angle),
                     d.turnLeft());
-            candidates.add(getPathSegment(a, newPoint));
+            candidates.add(new PathSegment(a, newPoint, BACKWARD_RIGHT_TURN));
         }
 
         return candidates;
     }
 
-    public PathSegment getPathSegment(PathSegment a, Coordinate newPoint) {
-        PathSegment newPath = new PathSegment(a, newPoint, getMovementType(a.getPos(), newPoint));
+//    public PathSegment getPathSegment(PathSegment a, Coordinate newPoint) {
+//        PathSegment newPath = new PathSegment(a, newPoint, getMovementType(a.getPos(), newPoint));
+//
+//        return newPath;
+//    }
 
-        return newPath;
-    }
-
-    public MovementType getMovementType(Coordinate pos, Coordinate endPos) {
-        switch(pos.getDir()) {
-            case UP:
-                if(endPos.getY() > pos.getY()) {
-                    if(endPos.getX() > pos.getX()) {
-                        return FORWARD_RIGHT_TURN;
-                    }
-                    else if(endPos.getX() < pos.getX()) {
-                        return FORWARD_LEFT_TURN;
-                    }
-                    return FORWARD;
-                } else {
-                    if(endPos.getX() > pos.getX()) {
-                        return BACKWARD_RIGHT_TURN;
-                    }
-                    else if(endPos.getX() < pos.getX()) {
-                        return BACKWARD_LEFT_TURN;
-                    }
-                    return BACKWARD;
-                }
-
-            case DOWN:
-                if(endPos.getY() > pos.getY()) {
-                    if(endPos.getX() > pos.getX()) {
-                        return BACKWARD_LEFT_TURN;
-                    }
-                    else if(endPos.getX() < pos.getX()) {
-                        return BACKWARD_RIGHT_TURN;
-                    }
-                    return BACKWARD;
-
-                } else {
-                    if(endPos.getX() > pos.getX()) {
-                        return FORWARD_LEFT_TURN;
-                    }
-                    else if(endPos.getX() < pos.getX()) {
-                        return FORWARD_RIGHT_TURN;
-                    }
-                    return FORWARD;
-                }
-
-            case LEFT:
-                if(endPos.getX() > pos.getX()) {
-                    if (endPos.getY() > pos.getY()) {
-                        return BACKWARD_RIGHT_TURN;
-                    } else if (endPos.getY() < pos.getY()) {
-                        return BACKWARD_LEFT_TURN;
-                    }
-                    return BACKWARD;
-                } else {
-                    if (endPos.getY() > pos.getY()) {
-                        return FORWARD_RIGHT_TURN;
-                    } else if (endPos.getY() < pos.getY()) {
-                        return FORWARD_LEFT_TURN;
-                    }
-                    return FORWARD;
-                }
-
-            case RIGHT:
-                if(endPos.getX() > pos.getX()) {
-                    if (endPos.getY() > pos.getY()) {
-                        return FORWARD_LEFT_TURN;
-                    } else if (endPos.getY() < pos.getY()) {
-                        return FORWARD_RIGHT_TURN;
-                    }
-                    return FORWARD;
-                } else {
-                    if (endPos.getY() > pos.getY()) {
-                        return BACKWARD_LEFT_TURN;
-                    } else if (endPos.getY() < pos.getY()) {
-                        return BACKWARD_RIGHT_TURN;
-                    }
-                    return BACKWARD;
-                }
-            default:
-                return null;
-        }
-    }
+//    public MovementType getMovementType(Coordinate pos, Coordinate endPos) {
+//        switch(pos.getDir()) {
+//            case UP:
+//                if(endPos.getY() > pos.getY()) {
+//                    if(endPos.getX() > pos.getX()) {
+//                        return FORWARD_SHARP_RIGHT_TURN;
+//                    }
+//                    else if(endPos.getX() < pos.getX()) {
+//                        return FORWARD_SHARP_LEFT_TURN;
+//                    }
+//                    return FORWARD;
+//                } else {
+//                    if(endPos.getX() > pos.getX()) {
+//                        return BACKWARD_RIGHT_TURN;
+//                    }
+//                    else if(endPos.getX() < pos.getX()) {
+//                        return BACKWARD_LEFT_TURN;
+//                    }
+//                    return BACKWARD;
+//                }
+//
+//            case DOWN:
+//                if(endPos.getY() > pos.getY()) {
+//                    if(endPos.getX() > pos.getX()) {
+//                        return BACKWARD_LEFT_TURN;
+//                    }
+//                    else if(endPos.getX() < pos.getX()) {
+//                        return BACKWARD_RIGHT_TURN;
+//                    }
+//                    return BACKWARD;
+//
+//                } else {
+//                    if(endPos.getX() > pos.getX()) {
+//                        return FORWARD_SHARP_LEFT_TURN;
+//                    }
+//                    else if(endPos.getX() < pos.getX()) {
+//                        return FORWARD_SHARP_RIGHT_TURN;
+//                    }
+//                    return FORWARD;
+//                }
+//
+//            case LEFT:
+//                if(endPos.getX() > pos.getX()) {
+//                    if (endPos.getY() > pos.getY()) {
+//                        return BACKWARD_RIGHT_TURN;
+//                    } else if (endPos.getY() < pos.getY()) {
+//                        return BACKWARD_LEFT_TURN;
+//                    }
+//                    return BACKWARD;
+//                } else {
+//                    if (endPos.getY() > pos.getY()) {
+//                        return FORWARD_SHARP_RIGHT_TURN;
+//                    } else if (endPos.getY() < pos.getY()) {
+//                        return FORWARD_SHARP_LEFT_TURN;
+//                    }
+//                    return FORWARD;
+//                }
+//
+//            case RIGHT:
+//                if(endPos.getX() > pos.getX()) {
+//                    if (endPos.getY() > pos.getY()) {
+//                        return FORWARD_SHARP_LEFT_TURN;
+//                    } else if (endPos.getY() < pos.getY()) {
+//                        return FORWARD_SHARP_RIGHT_TURN;
+//                    }
+//                    return FORWARD;
+//                } else {
+//                    if (endPos.getY() > pos.getY()) {
+//                        return BACKWARD_LEFT_TURN;
+//                    } else if (endPos.getY() < pos.getY()) {
+//                        return BACKWARD_RIGHT_TURN;
+//                    }
+//                    return BACKWARD;
+//                }
+//            default:
+//                return null;
+//        }
+//    }
 
     public boolean isAtGoal(PathSegment a, Coordinate b) {
         return a.getPos().equals(b);

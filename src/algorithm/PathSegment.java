@@ -7,6 +7,8 @@ import static algorithm.Constants.*;
 enum MovementType {
     FORWARD,
     BACKWARD,
+    FORWARD_SHARP_LEFT_TURN,
+    FORWARD_SHARP_RIGHT_TURN,
     FORWARD_LEFT_TURN,
     FORWARD_RIGHT_TURN,
     BACKWARD_LEFT_TURN,
@@ -65,10 +67,13 @@ public class PathSegment implements Comparable<PathSegment> {
             case BACKWARD:
                 gcost = STRAIGHT_COST + parent.getGcost();
                 break;
+            case FORWARD_SHARP_LEFT_TURN:
+            case FORWARD_SHARP_RIGHT_TURN:
+                gcost = SHARP_TURN_COST + parent.getGcost();
+                break;
             case FORWARD_LEFT_TURN:
             case FORWARD_RIGHT_TURN:
                 gcost = FORWARD_TURN_COST + parent.getGcost();
-                break;
             case BACKWARD_LEFT_TURN:
             case BACKWARD_RIGHT_TURN:
                 gcost = BACKWARD_TURN_COST + parent.getGcost();

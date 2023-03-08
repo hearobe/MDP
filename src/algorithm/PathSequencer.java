@@ -15,6 +15,11 @@ public class PathSequencer {
     private Arena arena;
     private Path[][] pathMatrix;
     private int[][] costMatrix;
+
+    public Coordinate[] getGoals() {
+        return goals;
+    }
+
     private Coordinate[] goals;
     private int[] pathSequence = null;
 

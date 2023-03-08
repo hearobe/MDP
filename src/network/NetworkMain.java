@@ -175,9 +175,11 @@ public class NetworkMain {
 
 //        test2.sendMessage("Hello");
         String androidInput = test2.receiveMessage();
+        System.out.println(androidInput);
 
         // should refactor this part, but I'm lazy
         String[] locations = androidInput.split(",!");
+//        System.out.println(Arrays.toString(locations));
         String[] curLocation;
         int[] x = new int[locations.length-1], y = new int[locations.length-1];
         Direction[] dir = new Direction[locations.length-1];
@@ -208,6 +210,7 @@ public class NetworkMain {
         arena.setObstacles(x, y, dir);
         PathSequencer pathSequencer = new PathSequencer(arena, start);
         System.out.println(pathSequencer.getSTMPath());
+        System.out.println(Arrays.toString(pathSequencer.getGoals()));
 
         try {
             test2.sendMessage(pathSequencer.getAndroidOrder());

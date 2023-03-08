@@ -127,9 +127,15 @@ public class PathFinder {
             candidates.add(new PathSegment(a, newPoint, FORWARD));
         }
 
-        for (int i = 0; i <= SHARP_RIGHT_VERT; i++) {
-            if (i == SHARP_RIGHT_VERT) {
-                for (int j = 0; j <= SHARP_RIGHT_HORI; j++) {
+        for (int i = 0; i <= SHARP_LEFT_VERT+1; i++) {
+            left = new Cell(col - i * (int) Math.cos(angle),
+                    row + i * (int) Math.sin(angle));
+            if (!g.validCell(left)) {
+                isLeftPossible = false;
+                break;
+            }
+            if (i == SHARP_LEFT_VERT) {
+                for (int j = 0; j <= SHARP_LEFT_HORI; j++) {
                     left = new Cell(col - i * (int) Math.cos(angle) - j * (int) Math.sin(angle),
                             row + i * (int) Math.sin(angle) - j * (int) Math.cos(angle));
                     if (!g.validCell(left)) {
@@ -151,29 +157,35 @@ public class PathFinder {
             candidates.add(new PathSegment(a, newPoint, FORWARD_SHARP_LEFT_TURN));
         }
 
-//        for (int i = 0; i <= SHARP_RIGHT_VERT; i++) {
-//            if (i == SHARP_RIGHT_VERT) {
-//                for (int j = 0; j <= SHARP_RIGHT_HORI; j++) {
-//                    right = new Cell(col - i * (int) Math.cos(angle) + j * (int) Math.sin(angle),
-//                            row + i * (int) Math.sin(angle) + j * (int) Math.cos(angle));
-//                    if (!g.validCell(right)) {
-//                        isRightPossible = false;
-//                        break;
-//                    }
-//                }
-//            }
-//        }
-//        right = new Cell(col - SHARP_OUTER_CORNER_VERT_CHECK * (int) Math.cos(angle) + SHARP_OUTER_CORNER_HORI_CHECK * (int) Math.sin(angle),
-//                row + SHARP_OUTER_CORNER_VERT_CHECK * (int) Math.sin(angle) + SHARP_OUTER_CORNER_HORI_CHECK * (int) Math.cos(angle));
-//        if (!g.validCell(right)) {
-//            isRightPossible = false;
-//        }
-//        if (isRightPossible) {
-//            newPoint = new Coordinate(col- SHARP_RIGHT_VERT *(int)Math.cos(angle)+ SHARP_RIGHT_HORI *(int)Math.sin(angle),
-//                    row+ SHARP_RIGHT_VERT *(int)Math.sin(angle)+ SHARP_RIGHT_HORI *(int)Math.cos(angle),
-//                    d.turnRight());
-//            candidates.add(new PathSegment(a, newPoint, FORWARD_SHARP_RIGHT_TURN));
-//        }
+        for (int i = 0; i <= SHARP_RIGHT_VERT+1; i++) {
+            right = new Cell(col - i * (int) Math.cos(angle),
+                    row + i * (int) Math.sin(angle));
+            if (!g.validCell(right)) {
+                isRightPossible = false;
+                break;
+            }
+            if (i == SHARP_RIGHT_VERT) {
+                for (int j = 0; j <= SHARP_RIGHT_HORI; j++) {
+                    right = new Cell(col - i * (int) Math.cos(angle) + j * (int) Math.sin(angle),
+                            row + i * (int) Math.sin(angle) + j * (int) Math.cos(angle));
+                    if (!g.validCell(right)) {
+                        isRightPossible = false;
+                        break;
+                    }
+                }
+            }
+        }
+        right = new Cell(col - SHARP_OUTER_CORNER_VERT_CHECK * (int) Math.cos(angle) + SHARP_OUTER_CORNER_HORI_CHECK * (int) Math.sin(angle),
+                row + SHARP_OUTER_CORNER_VERT_CHECK * (int) Math.sin(angle) + SHARP_OUTER_CORNER_HORI_CHECK * (int) Math.cos(angle));
+        if (!g.validCell(right)) {
+            isRightPossible = false;
+        }
+        if (isRightPossible) {
+            newPoint = new Coordinate(col- SHARP_RIGHT_VERT *(int)Math.cos(angle)+ SHARP_RIGHT_HORI *(int)Math.sin(angle),
+                    row+ SHARP_RIGHT_VERT *(int)Math.sin(angle)+ SHARP_RIGHT_HORI *(int)Math.cos(angle),
+                    d.turnRight());
+            candidates.add(new PathSegment(a, newPoint, FORWARD_SHARP_RIGHT_TURN));
+        }
 
         // ----------------------------- FORWARD WIDE
 

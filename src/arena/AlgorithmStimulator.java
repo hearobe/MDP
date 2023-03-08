@@ -117,9 +117,9 @@ public class AlgorithmStimulator extends Application {
 //		int[] obstacleY = new int[] {18, 8, 4, 18, 14, 8, 8, 10};
 //		Direction[] obstacleDirection = new Direction[] {DOWN, DOWN, LEFT, DOWN,LEFT, UP, RIGHT, LEFT};
 
-		int[] obstacleX = new int[] {1, 8,8,15,15};
-		int[] obstacleY = new int[] {13,7,13,5,19};
-		Direction[] obstacleDirection = new Direction[] {RIGHT, DOWN, LEFT, LEFT, DOWN};
+		int[] obstacleX = new int[] {2, 8,7,9,10, 19};
+		int[] obstacleY = new int[] {18,17,0,10,10, 8};
+		Direction[] obstacleDirection = new Direction[] {DOWN, DOWN, UP, LEFT, RIGHT, DOWN};
 
 //		int[] obstacleX = new int[] {2, 0, 19};
 //		int[] obstacleY = new int[] {14, 19, 0};

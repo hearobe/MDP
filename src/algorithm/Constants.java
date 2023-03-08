@@ -16,10 +16,10 @@ public class Constants {
     static final int FORWARD_RIGHT_TURN_HORI = 5;
     static final int FORWARD_RIGHT_TURN_VERT = 3;
     // backward left turn occurs when vehicle is in reverse, with front wheels turned towards the left
-    static final int BACKWARD_LEFT_TURN_HORI = 5;
-    static final int BACKWARD_LEFT_TURN_VERT = 3;
-    static final int BACKWARD_RIGHT_TURN_HORI = 4;
-    static final int BACKWARD_RIGHT_TURN_VERT = 4;
+    static final int BACKWARD_LEFT_TURN_HORI = 3;
+    static final int BACKWARD_LEFT_TURN_VERT = 5;
+    static final int BACKWARD_RIGHT_TURN_HORI = 3;
+    static final int BACKWARD_RIGHT_TURN_VERT = 5;
 
     static final int INNER_CORNER_VERT_CHECK = 2;
     static final int INNER_CORNER_HORI_CHECK = 2;

@@ -185,14 +185,14 @@ public class NetworkMain {
         curLocation = locations[0].split(",");
         Coordinate start = new Coordinate(Integer.parseInt(curLocation[0]), Integer.parseInt(curLocation[1]), Direction.parseDir(curLocation[2]));
         for (int i = 1; i < locations.length; i++) {
-            System.out.println(locations[i]);
+//            System.out.println(locations[i]);
             curLocation = locations[i].split(",");
-            System.out.println(Arrays.toString(curLocation));
+//            System.out.println(Arrays.toString(curLocation));
             x[i-1] = Integer.parseInt(curLocation[0]);
             y[i-1] = Integer.parseInt(curLocation[1]);
             dir[i-1] = Direction.parseDir(curLocation[2]);
         }
-        System.out.println(Arrays.toString(dir));
+//        System.out.println(Arrays.toString(dir));
 
 //        int[] x = new int[] {3, 10, 17, 7, 15};
 //        int[] y = new int[] {14, 9, 7, 1, 15};

@@ -53,8 +53,7 @@ public class PathSegment implements Comparable<PathSegment> {
     @Override
     public String toString() {
         return "(" + this.pos.getX() + "," + this.pos.getY()+ ") " + this.pos.getDir() + "\n" +
-                this.type + "\n" +
-                this.gcost + " " + this.fcost;
+                this.type;
     }
 
     public void calcGCost() {
@@ -74,9 +73,15 @@ public class PathSegment implements Comparable<PathSegment> {
             case FORWARD_LEFT_TURN:
             case FORWARD_RIGHT_TURN:
                 gcost = FORWARD_TURN_COST + parent.getGcost();
+                break;
             case BACKWARD_LEFT_TURN:
+                gcost = BACKWARD_LEFT_TURN_COST + parent.getGcost();
+                break;
             case BACKWARD_RIGHT_TURN:
-                gcost = BACKWARD_TURN_COST + parent.getGcost();
+                gcost = BACKWARD_RIGHT_TURN_COST + parent.getGcost();
+                break;
+            default:
+                System.out.println("Error in calcGcost");
                 break;
         }
     }

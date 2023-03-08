@@ -72,7 +72,7 @@ public class PathSequencer {
             s += pathMatrix[pathSequence[i-1]][pathSequence[i]].getSTMPath();
         }
         s += "!";
-
+        System.out.println(s);
         return s;
     }
 
@@ -216,38 +216,38 @@ public class PathSequencer {
             switch (d) {
                 case UP:
                     if (x == 0) {
-                        goals[i] = new Coordinate(x+1, y + 3, d.turnBack());
+                        goals[i] = new Coordinate(x+1, y + DISTANCE_FROM_GOAL, d.turnBack());
                     } else if (x == 19) {
-                        goals[i] = new Coordinate(x-1, y + 3, d.turnBack());
+                        goals[i] = new Coordinate(x-1, y + DISTANCE_FROM_GOAL, d.turnBack());
                     } else {
-                        goals[i] = new Coordinate(x, y + 3, d.turnBack());
+                        goals[i] = new Coordinate(x, y + DISTANCE_FROM_GOAL, d.turnBack());
                     }
                     break;
                 case DOWN:
                     if (x == 0) {
-                        goals[i] = new Coordinate(x+1, y - 3, d.turnBack());
+                        goals[i] = new Coordinate(x+1, y - DISTANCE_FROM_GOAL, d.turnBack());
                     } else if (x == 19) {
-                        goals[i] = new Coordinate(x-1, y - 3, d.turnBack());
+                        goals[i] = new Coordinate(x-1, y - DISTANCE_FROM_GOAL, d.turnBack());
                     } else {
-                        goals[i] = new Coordinate(x, y - 3, d.turnBack());
+                        goals[i] = new Coordinate(x, y - DISTANCE_FROM_GOAL, d.turnBack());
                     }
                     break;
                 case RIGHT:
                     if (y == 0) {
-                        goals[i] = new Coordinate(x + 3, y+1, d.turnBack());
+                        goals[i] = new Coordinate(x + DISTANCE_FROM_GOAL, y+1, d.turnBack());
                     } else if (y == 19) {
-                        goals[i] = new Coordinate(x + 3, y-1, d.turnBack());
+                        goals[i] = new Coordinate(x + DISTANCE_FROM_GOAL, y-1, d.turnBack());
                     } else {
-                        goals[i] = new Coordinate(x + 3, y, d.turnBack());
+                        goals[i] = new Coordinate(x + DISTANCE_FROM_GOAL, y, d.turnBack());
                     }
                     break;
                 case LEFT:
                     if (y == 0) {
-                        goals[i] = new Coordinate(x - 3, y+1, d.turnBack());
+                        goals[i] = new Coordinate(x - DISTANCE_FROM_GOAL, y+1, d.turnBack());
                     } else if (y == 19) {
-                        goals[i] = new Coordinate(x - 3, y-1, d.turnBack());
+                        goals[i] = new Coordinate(x - DISTANCE_FROM_GOAL, y-1, d.turnBack());
                     } else {
-                        goals[i] = new Coordinate(x - 3, y, d.turnBack());
+                        goals[i] = new Coordinate(x - DISTANCE_FROM_GOAL, y, d.turnBack());
                     }
                     break;
                 default:

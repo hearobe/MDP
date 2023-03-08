@@ -297,6 +297,12 @@ public class PathFinder {
                 isRightPossible = false;
                 break;
             }
+            right = new Cell(col - BACKWARD_RIGHT_OUTER_CORNER_HORI_CHECK * (int) Math.sin(angle),
+                    row - BACKWARD_RIGHT_OUTER_CORNER_HORI_CHECK * (int) Math.cos(angle));
+            if (!g.validCell(right)) {
+                isRightPossible = false;
+                break;
+            }
             if (i == INNER_CORNER_VERT_CHECK) { // if block is used to make sure this inner corner is only checked once
                 right = new Cell(col + INNER_CORNER_VERT_CHECK * (int) Math.cos(angle) + INNER_CORNER_HORI_CHECK * (int) Math.sin(angle),
                         row - INNER_CORNER_VERT_CHECK * (int) Math.sin(angle) + INNER_CORNER_HORI_CHECK * (int) Math.cos(angle));
@@ -305,12 +311,12 @@ public class PathFinder {
                 }
             }
             if (i == BACKWARD_RIGHT_TURN_VERT) {
-                right = new Cell(col + BACKWARD_RIGHT_OUTER_CORNER_VERT_CHECK * (int) Math.cos(angle) + BACKWARD_RIGHT_OUTER_CORNER_HORI_CHECK * (int) Math.sin(angle),
-                        row - BACKWARD_RIGHT_OUTER_CORNER_HORI_CHECK * (int) Math.sin(angle) + BACKWARD_RIGHT_OUTER_CORNER_HORI_CHECK * (int) Math.cos(angle));
-                if (!g.validCell(right)) {
-                    isRightPossible = false;
-                    break;
-                }
+//                right = new Cell(col + BACKWARD_RIGHT_OUTER_CORNER_VERT_CHECK * (int) Math.cos(angle) + BACKWARD_RIGHT_OUTER_CORNER_HORI_CHECK * (int) Math.sin(angle),
+//                        row - BACKWARD_RIGHT_OUTER_CORNER_HORI_CHECK * (int) Math.sin(angle) + BACKWARD_RIGHT_OUTER_CORNER_HORI_CHECK * (int) Math.cos(angle));
+//                if (!g.validCell(right)) {
+//                    isRightPossible = false;
+//                    break;
+//                }
                 for (int j = 0; j <= BACKWARD_RIGHT_TURN_HORI; j++) {
                     right = new Cell(col + i * (int) Math.cos(angle) + j * (int) Math.sin(angle),
                             row - i * (int) Math.sin(angle) + j * (int) Math.cos(angle));

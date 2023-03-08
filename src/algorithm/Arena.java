@@ -1,13 +1,16 @@
 package algorithm;
 
-import java.util.ArrayList;
+import car.Coordinate;
+
+import java.util.Arrays;
 
 import static algorithm.Constants.*;
 
 public class Arena {
 
-    Cell[][] grid;
-    ArrayList<Waypoint> goals = new ArrayList<>();
+    public Cell[][] grid;
+    private Coordinate[] obstacles;
+
 
     public Arena() {
         grid = new Cell[GRID_SIZE_IN_CELLS][GRID_SIZE_IN_CELLS];
@@ -17,21 +20,24 @@ public class Arena {
                 grid[row][col] = new Cell(row, col);
 
                 if (row == 0 || col == 0 || row == GRID_SIZE_IN_CELLS-1 || col == GRID_SIZE_IN_CELLS-1) {
-                    grid[row][col].setObstacle(true);
+                    grid[row][col].setBuffer(true);
                 }
             }
         }
     }
 
-    // add obstacle positions
-    // add node waypoints for start position and obstacle viewing points
-    // robot start position
-    public void initArenaObstacles(int[] x, int[] y, Direction[] d) {
-        int length = x.length;
+    public Coordinate[] getObstacles() {
+        return obstacles;
+    }
 
-        for (int i = 0; i<length; i++) {
+    public void setObstacles(int[] x, int[] y, Direction[] d) {
+        int n = x.length;
+        obstacles = new Coordinate[n];
+
+        for (int i = 0; i<n; i++) {
             int xCoordinate = x[i];
             int yCoordinate = y[i];
+            obstacles[i] = new Coordinate(xCoordinate, yCoordinate, d[i]);
 
             grid[yCoordinate][xCoordinate].setImageDirection(d[i]);
 
@@ -43,27 +49,13 @@ public class Arena {
                     if (k < 0 || k > 19) {
                         continue;
                     }
-                    grid[k][j].setObstacle(true);
+                    if (j == xCoordinate && k == yCoordinate) {
+                        grid[k][j].setObstacle(true);
+                    }
+                    grid[k][j].setBuffer(true);
                 }
             }
         }
-
-        for (int i = 0; i<20; i++) {
-            grid[0][i].setObstacle(true);
-            grid[19][i].setObstacle(true);
-            grid[i][0].setObstacle(true);
-            grid[i][19].setObstacle(true);
-        }
-    }
-
-    // currently unused, may not be necessary
-    public boolean validCell(Waypoint p) {
-        int x = p.getCoordinateX();
-        int y = p.getCoordinateY();
-        if (x < 0 || y < 0 || x > 199 || y > 199) {
-            return false;
-        }
-        return !grid[p.getCoordinateY()/10][p.getCoordinateX()/10].isObstacle();
     }
 
     public boolean validCell(Cell c) {
@@ -72,6 +64,6 @@ public class Arena {
         if (x < 0 || y < 0 || x > 19 || y > 19) {
             return false;
         }
-        return !grid[y][x].isObstacle();
+        return !(grid[y][x].isObstacle() || grid[y][x].isBuffer());
     }
 }

@@ -16,6 +16,10 @@ public class Car {
 		this.dir = dir;
 	}
 	
+	public Car() {
+		// TODO Auto-generated constructor stub
+	}
+
 	public int getXCoord() {
 		return xCoord;
 	}
@@ -41,14 +45,22 @@ public class Car {
 	}
 	
 	public void setCoord(int x, int y) {
-		this.yCoord = y;
 		this.xCoord = x;
+		this.yCoord = y;
 	}
 	
 	public void update(CarCoordinate k) {
 		this.xCoord = k.x;
 		this.yCoord = k.y;
 		this.dir = k.dir;
+	}
+	
+	public CarCoordinate getCarCoordinate() {
+		return new CarCoordinate(this.xCoord, this.yCoord, this.dir);
+	}
+	
+	public String toString() {
+		return String.format("x:%d y:%d \n", this.xCoord, this.yCoord);
 	}
 	
 	 

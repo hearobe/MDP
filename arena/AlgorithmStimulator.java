@@ -7,6 +7,8 @@ import static algorithm.Direction.UP;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import algorithm.Arena;
 import algorithm.Cell;
@@ -14,11 +16,14 @@ import algorithm.Direction;
 import algorithm.Path;
 import algorithm.PathFinder;
 import algorithm.PathSegment;
+import algorithm.PathSequencer;
 import algorithm.Permute;
-import algorithm.Waypoint;
 import car.Car;
-import car.CarCoordinate;
+import car.Coordinate;
+import javafx.animation.Animation;
 import javafx.animation.AnimationTimer;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 // Java Program to create a button and add it to the stage
 import javafx.application.Application;
 import javafx.event.EventHandler;
@@ -42,7 +47,7 @@ import javafx.scene.text.TextAlignment;
 import javafx.scene.transform.Affine;
 import javafx.scene.transform.Transform;
 import javafx.stage.Stage;
-
+import javafx.util.Duration;
 import stopwatch.StopWatch;
 
 public class AlgorithmStimulator extends Application {
@@ -52,7 +57,7 @@ public class AlgorithmStimulator extends Application {
 	private Label controlLabel, timerHeaderLabel, loadArenaLabel, resetArenaLabel, startArenaLabel, filler;
 	private GridPane controlMenu;
 	private StopWatch stopWatch;
-	
+	private CarCoordinate startingPosition;
     private static PathFinder pathFinder = new PathFinder();
     private static Arena arena = new Arena();
     private static Path[][] pathMatrix;
@@ -60,40 +65,115 @@ public class AlgorithmStimulator extends Application {
     private static Waypoint[] obstacles;
     private static Waypoint[] goals;
     
+    private static Canvas map;
+    private myAnimationTimer animateTimer1;
+
+    private Car car;
+    private PathSequencer pathSequencer;
+    int tmp = 0;
 	// launch the application
-	public void start(Stage window)
+    
+    class myAnimationTimer extends AnimationTimer {
+		private Canvas map;
+		private List<List<CarCoordinate>> carPath;
+		private int i = 0;
+		private int j = 0;
+        private long lastUpdate = 0 ;
+        private CarCoordinate startingPosition;
+        private Car car;
+        
+		public myAnimationTimer(Canvas map,  List<List<CarCoordinate>> carPath, Car car, CarCoordinate startPosition) {
+			this.map = map;
+			this.carPath = carPath;
+			this.startingPosition = startPosition;
+			this.car = car;
+		}
+ 
+        @Override
+        public void start() {
+            super.start();
+        }
+        
+        public void reset() {
+        	this.i = 0;
+        	this.j = 0;
+        	this.car.update(this.startingPosition);
+        	
+        }
+
+        @Override
+        public void handle(long timestamp) {
+            if (timestamp - lastUpdate >= 1000_000_000) {
+            	map.getGraphicsContext2D().clearRect(0, 0, map.getWidth(), map.getHeight());
+            	
+            	drawMap(map, arena);
+            	drawCar(map, car);
+                lastUpdate = timestamp ;
+            	System.out.printf("%d %d\n", i, j);
+            	car.update(carPath.get(this.i).get(j++));
+                if(j == carPath.get(i).size()) {
+                	i++;
+                	j = 0;
+                }
+                if(i == carPath.size()) {
+                	stop();
+                }
+                	
+            }
+
+        }
+    }
+    
+	public void start(Stage window) throws InterruptedException
 	{
 		window.setTitle("MDP Group 4 Algorithm Demo");
 		GridPane g = new GridPane();
 
 		StackPane layout = new StackPane();
 
-        Canvas map = new Canvas(ArenaDimensions.ARENA_STIMULATOR_WIDTH,ArenaDimensions.ARENA_STIMULATOR_HEIGHT);
+        map = new Canvas(ArenaDimensions.ARENA_STIMULATOR_WIDTH,ArenaDimensions.ARENA_STIMULATOR_HEIGHT);
         arena = new Arena();
-
         
-        Car c = new Car(1, 1, UP);
-        
-        drawMap(map, arena);
-
-        drawCar(map, c);
-
        
+        int[] obstacleX = new int[] {1, 8, 14, 7, 17};
+        int[] obstacleY = new int[] {18, 8, 14 ,18, 4};
+        Direction[] obstacleDirection = new Direction[] {DOWN, DOWN, LEFT, DOWN,LEFT};
+        arena.setObstacles(obstacleX, obstacleY, obstacleDirection);
+       
+        startingPosition = new CarCoordinate(2,2, RIGHT);
+        car = new Car(); car.update(startingPosition);
         
+        pathSequencer = new PathSequencer(arena, this.car.getCarCoordinate());
+//
+        List<List<CarCoordinate>> carPath = pathSequencer.getPath();
+        
+        for(List<CarCoordinate> l : carPath) {
+        	for(CarCoordinate c: l)
+        		System.out.println(c.toString());
+        }
+        drawMap(map, arena);
+        drawCar(map, car);
+   
+        animateTimer1 = new myAnimationTimer( map,  carPath,  car,  startingPosition);
+
         stopWatch = new StopWatch();
 
         startBtn = new Button("Start "); 
         startBtn.setOnAction(e -> {
             String text = startBtn.getText();
             if (text.equals("Start ") || text.equals("Resume")) {
+
             	startBtn.setText("Pause");
                if (text.equals("Start ")) {
                   stopWatch.start();
+                  animateTimer1.start();
                } else {
+            	   animateTimer1.start();
             	   stopWatch.resume();
                }
             } else {
             	startBtn.setText("Resume");
+            	animateTimer1.stop();
             	stopWatch.pause();
             }
          });
@@ -102,7 +182,13 @@ public class AlgorithmStimulator extends Application {
         resetBtn.setOnAction(e -> {
         	startBtn.setText("Start ");
         	stopWatch.clear();
+        	car.update(startingPosition);
+        	drawMap(map, arena);
+        	drawCar(map, car);
+        	animateTimer1.reset();
         });
+        
+        
        
         loadBtn = new Button("Load"); 
         loadBtn.setVisible(false);
@@ -151,9 +237,18 @@ public class AlgorithmStimulator extends Application {
         Scene scene = new Scene(root,ArenaDimensions.ARENA_STIMULATOR_WIDTH *1.55 ,ArenaDimensions.ARENA_STIMULATOR_HEIGHT);
         window.setScene(scene);  
         window.show();
+        
+
+
+
 
 	}
 	
+
+	
+	
+
+
 	private int xCoordConversion(int x) {
 		return  x * ArenaDimensions.ARENA_CELL_SIZE + ArenaDimensions.ARENA_PADDING;
 
@@ -181,9 +276,10 @@ public class AlgorithmStimulator extends Application {
 
 	
 	}
+	
 	private void drawMap(Canvas map, Arena arena) {
         GraphicsContext gc = map.getGraphicsContext2D();
-                
+
         gc.setLineWidth(1);
         for(int i = 0; i < ArenaDimensions.ARENA_WIDTH_UNITS; i++) {
         	for(int j = 0; j < ArenaDimensions.ARENA_HEIGHT_UNITS; j++) {
@@ -209,7 +305,7 @@ public class AlgorithmStimulator extends Application {
 	
 	private void drawCell(Canvas map, Arena arena, int i, int j) {
         GraphicsContext gc = map.getGraphicsContext2D();
-		Cell curCell = arena.grid[i][j];
+		Cell curCell = arena.grid[j][i];
 		Color cellColor; 
 		
 		//choose color based on cell characteristics

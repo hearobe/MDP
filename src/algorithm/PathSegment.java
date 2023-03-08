@@ -1,10 +1,14 @@
 package algorithm;
 
+import car.Coordinate;
+
 import static algorithm.Constants.*;
 
 enum MovementType {
     FORWARD,
     BACKWARD,
+    FORWARD_SHARP_LEFT_TURN,
+    FORWARD_SHARP_RIGHT_TURN,
     FORWARD_LEFT_TURN,
     FORWARD_RIGHT_TURN,
     BACKWARD_LEFT_TURN,
@@ -13,12 +17,12 @@ enum MovementType {
 
 public class PathSegment implements Comparable<PathSegment> {
     PathSegment parent;
-    Waypoint pos;
+    Coordinate pos;
     int gcost = -1;
     int fcost = -1;
     MovementType type;
 
-    public PathSegment(PathSegment parent, Waypoint pos, MovementType type) {
+    public PathSegment(PathSegment parent, Coordinate pos, MovementType type) {
         this.parent = parent;
         this.pos = pos;
         this.type = type;
@@ -48,9 +52,8 @@ public class PathSegment implements Comparable<PathSegment> {
 
     @Override
     public String toString() {
-        return "(" + this.pos.getCoordinateX() + "," + this.pos.getCoordinateY()+ ") " + this.pos.getDirection() + "\n" +
-                this.type + "\n" +
-                this.gcost + " " + this.fcost;
+        return "(" + this.pos.getX() + "," + this.pos.getY()+ ") " + this.pos.getDir() + "\n" +
+                this.type;
     }
 
     public void calcGCost() {
@@ -63,8 +66,23 @@ public class PathSegment implements Comparable<PathSegment> {
             case BACKWARD:
                 gcost = STRAIGHT_COST + parent.getGcost();
                 break;
+            case FORWARD_SHARP_LEFT_TURN:
+            case FORWARD_SHARP_RIGHT_TURN:
+                gcost = SHARP_TURN_COST + parent.getGcost();
+                break;
+            case FORWARD_LEFT_TURN:
+            case FORWARD_RIGHT_TURN:
+                gcost = FORWARD_TURN_COST + parent.getGcost();
+                break;
+            case BACKWARD_LEFT_TURN:
+                gcost = BACKWARD_LEFT_TURN_COST + parent.getGcost();
+                break;
+            case BACKWARD_RIGHT_TURN:
+                gcost = BACKWARD_RIGHT_TURN_COST + parent.getGcost();
+                break;
             default:
-                gcost = TURN_COST + parent.getGcost();
+                System.out.println("Error in calcGcost");
+                break;
         }
     }
 
@@ -76,11 +94,11 @@ public class PathSegment implements Comparable<PathSegment> {
         this.parent = parent;
     }
 
-    public Waypoint getPos() {
+    public Coordinate getPos() {
         return pos;
     }
 
-    public void setPos(Waypoint pos) {
+    public void setPos(Coordinate pos) {
         this.pos = pos;
     }
 
@@ -88,17 +106,13 @@ public class PathSegment implements Comparable<PathSegment> {
         return gcost;
     }
 
-    public void setGcost(int gcost) {
-        this.gcost = gcost;
-    }
-
-    public void calcFCost(Waypoint goal) {
+    public void calcFCost(Coordinate goal) {
         if (goal == null) {
             this.fcost = 0;
             return;
         }
 
-        int hcost = Math.abs(pos.CoordinateX - goal.getCoordinateX()) + Math.abs(pos.CoordinateY - goal.getCoordinateY());
+        int hcost = Math.abs(pos.getX() - goal.getX()) + Math.abs(pos.getY() - goal.getY());
         fcost = gcost + hcost;
         return;
     }

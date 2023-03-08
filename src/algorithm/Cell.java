@@ -2,6 +2,7 @@ package algorithm;
 
 public class Cell {
     private boolean isObstacle = false;
+    private boolean isBuffer = false;
     Direction imageDirection = null;
     int positionX; // in terms of grid number. i.e. rightmost cell is 19
     int positionY; // in terms of grid number. i.e. bottom cell is 19
@@ -13,6 +14,14 @@ public class Cell {
 
     public String toString() {
         return "Cell (" + positionX + ", " + positionY + ")";
+    }
+
+    public boolean isBuffer() {
+        return isBuffer;
+    }
+
+    public void setBuffer(boolean buffer) {
+        isBuffer = buffer;
     }
 
     public boolean isObstacle() {

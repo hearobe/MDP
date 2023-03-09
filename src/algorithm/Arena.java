@@ -41,11 +41,11 @@ public class Arena {
 
             grid[yCoordinate][xCoordinate].setImageDirection(d[i]);
 
-            for (int j = xCoordinate-1; j<=xCoordinate+1; j++) {
+            for (int j = xCoordinate-OBSTACLE_BUFFER; j<=xCoordinate+OBSTACLE_BUFFER; j++) {
                 if (j < 0 || j > 19) {
                     continue;
                 }
-                for (int k = yCoordinate-1; k<=yCoordinate+1; k++) {
+                for (int k = yCoordinate-OBSTACLE_BUFFER; k<=yCoordinate+OBSTACLE_BUFFER; k++) {
                     if (k < 0 || k > 19) {
                         continue;
                     }

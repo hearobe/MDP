@@ -127,6 +127,9 @@ public class PathSequencer {
                 }
             }
         }
+        for (int i = 0; i<n; i++) {
+            System.out.println(Arrays.toString(costMatrix[i]));
+        }
     }
 
     private boolean findAlternativeGoal(int start, int end) {
@@ -165,14 +168,13 @@ public class PathSequencer {
             newgoal = new Coordinate(col + 1 * (int) Math.sin(angle),
                     row + 1 * (int) Math.cos(angle), d);
             Path path2 = pathFinder.findPathBetweenTwoNodes(goals[start], newgoal, arena);
-            if (cost <= path2.getCost()) {
+            if (path2 == null || cost <= path2.getCost()) {
                 pathMatrix[start][end] = path;
-                return true;
             } else {
                 goals[end] = newgoal;
                 pathMatrix[start][end] = path2;
-                return true;
             }
+            return true;
         }
 
         newgoal = new Coordinate(col + 1 * (int) Math.sin(angle),

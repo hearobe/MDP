@@ -4,6 +4,7 @@ public class Constants {
     static final int GRID_SIZE_IN_CELLS = 20;
 
     static final int DISTANCE_FROM_GOAL = 4;
+    static final int OBSTACLE_BUFFER = 2;
 
     static final int FORWARD_MOVEMENT = 1;
     static final int BACKWARD_MOVEMENT = 1;
